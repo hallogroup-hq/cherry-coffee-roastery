@@ -3,7 +3,18 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, RotateCw, Sparkles, Volume2, VolumeX, Flame, Droplets, Thermometer, Compass } from "lucide-react";
+import {
+  ArrowRight,
+  RotateCw,
+  Droplets,
+  Layers,
+  Thermometer,
+  Compass,
+  Gauge,
+  Sparkles,
+  Sliders,
+  ShieldCheck,
+} from "lucide-react";
 import HeroCenter3DCanvas, { Hero3DMode } from "@/components/3d/HeroCenter3DCanvas";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -64,16 +75,19 @@ const STAGES: StageDetail[] = [
 export default function EditorialHero() {
   const { language } = useLanguage();
   const [heroMode, setHeroMode] = useState<Hero3DMode>("dripper");
+  const [isPouring, setIsPouring] = useState(false);
+  const [isExploded, setIsExploded] = useState(false);
   const [activeStageIdx, setActiveStageIdx] = useState(0);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   const currentStage = STAGES[activeStageIdx];
 
   const handleStageSelect = (idx: number) => {
     setActiveStageIdx(idx);
-    // If user clicks roast stage, automatically switch 3D canvas to bean mode for direct synergy
-    if (idx === 3) {
-      setHeroMode("bean");
+    // Auto switch mode for natural synergy
+    if (idx === 2 || idx === 3) {
+      setHeroMode("grinder");
+    } else {
+      setHeroMode("dripper");
     }
   };
 
@@ -93,10 +107,10 @@ export default function EditorialHero() {
         </div>
       </div>
 
-      {/* 2. Main 3-Column Centerpiece Layout (Left: Narrative, Center: 3D, Right: Telemetry) */}
+      {/* 2. Main 3-Column Centerpiece Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 pt-8 items-center">
         
-        {/* LEFT COLUMN: Poetic Slow Bar Narrative (3.5 cols on lg) */}
+        {/* LEFT COLUMN: Poetic Narrative */}
         <div className="lg:col-span-3 xl:col-span-3 space-y-6 order-2 lg:order-1">
           <div className="space-y-3">
             <span className="text-[11px] font-mono-data uppercase tracking-[0.25em] text-[#C99454] block">
@@ -117,7 +131,7 @@ export default function EditorialHero() {
             </p>
           </div>
 
-          {/* Quick Sanctuary Schedule Badge */}
+          {/* Sanctuary Schedule Badge */}
           <div className="p-3 bg-[#141311] border border-white/5 space-y-1 text-xs font-mono-data">
             <div className="text-[#8C8375] text-[10px] uppercase tracking-wider">Ritual Slow Bar Goalpara</div>
             <div className="text-[#DCD5C8] font-medium">Setiap Akhir Pekan (Sabtu – Minggu)</div>
@@ -125,13 +139,16 @@ export default function EditorialHero() {
           </div>
         </div>
 
-        {/* CENTER COLUMN: The Mind-Blowing Interactive 3D WebGL Canvas (6 cols on lg) */}
+        {/* CENTER COLUMN: 3D Centerpiece with Interactive Controls */}
         <div className="lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center relative order-1 lg:order-2">
           
           {/* Top Floating Seamless Mode Switcher */}
           <div className="z-20 mb-2 flex items-center p-1 bg-[#141311]/90 backdrop-blur-md border border-[#D8A86E]/30 rounded-full shadow-2xl">
             <button
-              onClick={() => setHeroMode("dripper")}
+              onClick={() => {
+                setHeroMode("dripper");
+                setIsExploded(false);
+              }}
               className={`px-4 sm:px-5 py-1.5 rounded-full text-[11px] font-mono-data tracking-wider uppercase transition-all duration-300 ${
                 heroMode === "dripper"
                   ? "bg-[#C99454] text-[#0E0D0C] font-bold shadow-lg shadow-[#C99454]/30"
@@ -141,48 +158,85 @@ export default function EditorialHero() {
               [ 01 Ritual Seduh ]
             </button>
             <button
-              onClick={() => setHeroMode("bean")}
+              onClick={() => {
+                setHeroMode("grinder");
+                setIsExploded(false);
+              }}
               className={`px-4 sm:px-5 py-1.5 rounded-full text-[11px] font-mono-data tracking-wider uppercase transition-all duration-300 ${
-                heroMode === "bean"
+                heroMode === "grinder"
                   ? "bg-[#C99454] text-[#0E0D0C] font-bold shadow-lg shadow-[#C99454]/30"
                   : "text-[#A69E90] hover:text-white"
               }`}
             >
-              [ 02 Biji Sangrai ]
+              [ 02 Grinder Presisi ]
             </button>
           </div>
 
-          {/* 3D Canvas Stage with Golden Rim Halo */}
+          {/* 3D Canvas Stage */}
           <div className="relative w-full aspect-[4/3] sm:aspect-square max-w-[560px] flex items-center justify-center">
-            {/* Ambient gold glow behind 3D setup */}
+            {/* Ambient halo glow */}
             <div className="absolute inset-0 bg-radial from-[#C99454]/12 via-transparent to-transparent pointer-events-none -z-10 rounded-full blur-2xl" />
 
             <HeroCenter3DCanvas
               mode={heroMode}
-              onModeToggle={() => setHeroMode((prev) => (prev === "dripper" ? "bean" : "dripper"))}
+              isPouring={isPouring}
+              isExploded={isExploded}
+              onModeToggle={() => setHeroMode((prev) => (prev === "dripper" ? "grinder" : "dripper"))}
             />
 
-            {/* Bottom 360 Drag Hint Overlay */}
-            <div className="absolute bottom-2 inset-x-0 flex items-center justify-center pointer-events-none">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#12110F]/80 backdrop-blur-sm border border-white/10 text-[10px] font-mono-data text-[#A69E90] tracking-wider uppercase">
-                <RotateCw className="w-3 h-3 text-[#C99454] animate-spin" style={{ animationDuration: "12s" }} />
-                <span>360° Drag untuk Memutar · Scroll Zoom</span>
+            {/* Floating Interactive Action HUD (Directly Under 3D) */}
+            <div className="absolute bottom-2 inset-x-0 flex flex-col items-center gap-2 z-20 pointer-events-auto">
+              {/* Interactive Tool Actions */}
+              {heroMode === "dripper" && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onMouseDown={() => setIsPouring(true)}
+                    onMouseUp={() => setIsPouring(false)}
+                    onTouchStart={() => setIsPouring(true)}
+                    onTouchEnd={() => setIsPouring(false)}
+                    className={`px-3.5 py-1.5 rounded-full text-[11px] font-mono-data tracking-wider uppercase flex items-center gap-1.5 transition-all shadow-xl active:scale-95 ${
+                      isPouring
+                        ? "bg-[#D8A86E] text-[#0E0D0C] font-bold shadow-[#C99454]/40"
+                        : "bg-[#1C1A17]/90 hover:bg-[#25221E] border border-[#C99454]/40 text-[#E6D9C8]"
+                    }`}
+                  >
+                    <Droplets className={`w-3.5 h-3.5 ${isPouring ? "text-[#0E0D0C] animate-bounce" : "text-[#C99454]"}`} />
+                    <span>{isPouring ? "Menuang Air Panas..." : "Tahan untuk Tuang"}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setIsExploded((prev) => !prev)}
+                    className={`px-3.5 py-1.5 rounded-full text-[11px] font-mono-data tracking-wider uppercase flex items-center gap-1.5 transition-all border ${
+                      isExploded
+                        ? "bg-[#C99454] text-[#0E0D0C] font-bold border-[#C99454]"
+                        : "bg-[#141311]/80 hover:bg-[#1C1A17] border-white/15 text-[#A69E90] hover:text-white"
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>{isExploded ? "Tutup Anatomi" : "Anatomi Seduh"}</span>
+                  </button>
+                </div>
+              )}
+
+              {/* 360 Drag Hint */}
+              <div className="inline-flex items-center space-x-2 px-3 py-0.5 rounded-full bg-[#12110F]/80 backdrop-blur-sm border border-white/10 text-[10px] font-mono-data text-[#A69E90] tracking-wider uppercase pointer-events-none">
+                <RotateCw className="w-2.5 h-2.5 text-[#C99454] animate-spin" style={{ animationDuration: "12s" }} />
+                <span>360° Drag Orbit · Scroll Zoom</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Live Extraction & Roastery Telemetry (3.5 cols on lg) */}
+        {/* RIGHT COLUMN: Live Scientific Telemetry */}
         <div className="lg:col-span-3 xl:col-span-3 space-y-4 order-3">
           <div className="p-5 bg-[#141311] border border-[#D8A86E]/20 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <span className="text-[10px] font-mono-data text-[#C99454] uppercase tracking-widest font-bold">
-                {heroMode === "dripper" ? "Telemetri Seduh V60" : "Analisis Spektrum Biji"}
+                {heroMode === "dripper" ? "Telemetri Seduh V60" : "Telemetri Partikel Gilingan"}
               </span>
               <span className="w-2 h-2 rounded-full bg-[#C99454] animate-pulse" />
             </div>
 
-            {/* Telemetry rows depending on mode */}
             <AnimatePresence mode="wait">
               {heroMode === "dripper" ? (
                 <motion.div
@@ -198,7 +252,7 @@ export default function EditorialHero() {
                       <Thermometer className="w-3.5 h-3.5 text-[#C99454]" />
                       Suhu Air Seduh
                     </span>
-                    <span className="text-sm font-bold text-[#F7F5F0]">93.4°C</span>
+                    <span className="text-sm font-bold text-[#F7F5F0]">93.4°C Target</span>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -233,7 +287,7 @@ export default function EditorialHero() {
                 </motion.div>
               ) : (
                 <motion.div
-                  key="bean-telemetry"
+                  key="grinder-telemetry"
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
@@ -242,32 +296,32 @@ export default function EditorialHero() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#8C8375] flex items-center gap-1.5">
-                      <Flame className="w-3.5 h-3.5 text-[#C99454]" />
-                      Indeks Agtron
+                      <Gauge className="w-3.5 h-3.5 text-[#C99454]" />
+                      Keseragaman Partikel
                     </span>
-                    <span className="text-sm font-bold text-[#F7F5F0]">62.4 (Light-Med)</span>
+                    <span className="text-sm font-bold text-[#F7F5F0]">98.4% Uniform</span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#8C8375] flex items-center gap-1.5">
-                      <Compass className="w-3.5 h-3.5 text-[#C99454]" />
-                      Kerapatan Sel
+                      <Sliders className="w-3.5 h-3.5 text-[#C99454]" />
+                      Ukuran Micron
                     </span>
-                    <span className="text-sm font-bold text-[#D8A86E]">384 g/L</span>
+                    <span className="text-sm font-bold text-[#D8A86E]">650 µm (Filter V60)</span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#8C8375] flex items-center gap-1.5">
-                      <Droplets className="w-3.5 h-3.5 text-[#C99454]" />
-                      Kadar Air
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#C99454]" />
+                      Debu Halus (Fines)
                     </span>
-                    <span className="text-sm font-bold text-[#F7F5F0]">10.8% Target</span>
+                    <span className="text-sm font-bold text-[#F7F5F0]">&lt; 4% Ultra-Low</span>
                   </div>
 
                   <div className="pt-2 border-t border-white/5 space-y-1">
-                    <span className="text-[10px] text-[#8C8375] uppercase block">Serpihan Chaff</span>
+                    <span className="text-[10px] text-[#8C8375] uppercase block">Material Mata Burr</span>
                     <p className="text-[11px] font-sans text-[#B5ABA0] leading-snug">
-                      Golden chaff terjaga utuh di belahan tengah, menandakan sangrai lambat tanpa gosong luar.
+                      48mm 7-Star CNC Titanium-Coated Steel menghasilkan gilingan presisi tanpa panas berlebih.
                     </p>
                   </div>
                 </motion.div>

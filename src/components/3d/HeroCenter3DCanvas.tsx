@@ -4,15 +4,19 @@ import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
-export type Hero3DMode = "dripper" | "bean";
+export type Hero3DMode = "dripper" | "grinder";
 
 interface HeroCenter3DCanvasProps {
   mode: Hero3DMode;
+  isPouring?: boolean;
+  isExploded?: boolean;
   onModeToggle?: () => void;
 }
 
 export default function HeroCenter3DCanvas({
   mode,
+  isPouring = false,
+  isExploded = false,
   onModeToggle,
 }: HeroCenter3DCanvasProps) {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -23,17 +27,22 @@ export default function HeroCenter3DCanvas({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
-  // Groups for seamless morphing
+  // Group references
   const dripperGroupRef = useRef<THREE.Group | null>(null);
-  const beanGroupRef = useRef<THREE.Group | null>(null);
-  const aromaNodesRef = useRef<THREE.Group[]>([]);
+  const grinderGroupRef = useRef<THREE.Group | null>(null);
+  const dripperConeMeshRef = useRef<THREE.Mesh | null>(null);
+  const filterMeshRef = useRef<THREE.Mesh | null>(null);
+  const carafeMeshRef = useRef<THREE.Mesh | null>(null);
+  const slurryMeshRef = useRef<THREE.Mesh | null>(null);
+  const waterStreamRef = useRef<THREE.Mesh | null>(null);
+  const crankGroupRef = useRef<THREE.Group | null>(null);
   const steamParticlesRef = useRef<THREE.Points | null>(null);
   const dropletsRef = useRef<THREE.Mesh[]>([]);
   const rippleMeshRef = useRef<THREE.Mesh | null>(null);
   const liquidMeshRef = useRef<THREE.Mesh | null>(null);
   const tracerOrbitRef = useRef<THREE.Mesh | null>(null);
 
-  // Physics & interaction state
+  // State refs
   const stateRef = useRef({
     targetRotX: 0.12,
     targetRotY: 0.35,
@@ -45,17 +54,19 @@ export default function HeroCenter3DCanvas({
     zoom: 1.0,
     targetZoom: 1.0,
     dripperScale: mode === "dripper" ? 1.0 : 0.0,
-    beanScale: mode === "bean" ? 1.0 : 0.0,
+    grinderScale: mode === "grinder" ? 1.0 : 0.0,
     targetDripperScale: mode === "dripper" ? 1.0 : 0.0,
-    targetBeanScale: mode === "bean" ? 1.0 : 0.0,
+    targetGrinderScale: mode === "grinder" ? 1.0 : 0.0,
     sloshX: 0,
     sloshZ: 0,
+    explodeProgress: 0.0,
+    pourStreamAlpha: 0.0,
   });
 
-  // Synchronize target scales when mode changes
+  // Sync mode changes
   useEffect(() => {
     stateRef.current.targetDripperScale = mode === "dripper" ? 1.0 : 0.0;
-    stateRef.current.targetBeanScale = mode === "bean" ? 1.0 : 0.0;
+    stateRef.current.targetGrinderScale = mode === "grinder" ? 1.0 : 0.0;
   }, [mode]);
 
   useEffect(() => {
@@ -83,7 +94,7 @@ export default function HeroCenter3DCanvas({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.32;
+    renderer.toneMappingExposure = 1.35;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
@@ -97,11 +108,11 @@ export default function HeroCenter3DCanvas({
     const envTexture = pmremGenerator.fromScene(roomEnv, 0.04).texture;
     scene.environment = envTexture;
 
-    // 5. CINEMATIC 5-POINT STUDIO LIGHTING (Warm Goalpara Dawn + Amber Rim + Caustics)
+    // 5. CINEMATIC 5-POINT STUDIO LIGHTING
     const ambientLight = new THREE.AmbientLight(0xfff7ed, 0.85);
     scene.add(ambientLight);
 
-    // Key Light: Golden Goalpara morning sun (sharp specular highlights on brass and glass facets)
+    // Key Light: Warm morning Goalpara gold (specular highlights on brass and glass facets)
     const keyLight = new THREE.DirectionalLight(0xffd580, 4.2);
     keyLight.position.set(4.5, 6.0, 4.0);
     keyLight.castShadow = true;
@@ -110,7 +121,7 @@ export default function HeroCenter3DCanvas({
     keyLight.shadow.bias = -0.0001;
     scene.add(keyLight);
 
-    // Rim Backlight: High-contrast cyan-white rim outlining glass edges from behind
+    // Rim Backlight: High-contrast cyan-white rim outlining glass and knurling from behind
     const rimBacklight = new THREE.DirectionalLight(0xbbf2f6, 3.8);
     rimBacklight.position.set(-4.5, 4.0, -4.5);
     scene.add(rimBacklight);
@@ -120,14 +131,14 @@ export default function HeroCenter3DCanvas({
     amberFillLight.position.set(-2.5, -0.5, 3.0);
     scene.add(amberFillLight);
 
-    // Top Down Spotlight: Focused squarely on the dripper cone and grounds bed
+    // Top Down Spotlight: Focused directly on the dripper cone and grounds bed
     const topSpot = new THREE.SpotLight(0xffeedd, 4.5, 12, Math.PI / 4, 0.5);
     topSpot.position.set(0, 5.5, 0.5);
     topSpot.target.position.set(0, 1.2, 0);
     scene.add(topSpot);
     scene.add(topSpot.target);
 
-    // Internal Caustic Glow Light: Placed right at the center of the coffee server
+    // Internal Caustic Glow Light
     const causticLight = new THREE.PointLight(0xd97706, 2.8, 4.5);
     causticLight.position.set(0, -1.2, 0);
     scene.add(causticLight);
@@ -145,7 +156,7 @@ export default function HeroCenter3DCanvas({
     scene.add(shadowMesh);
 
     // =========================================================================
-    // PROCEDURAL TEXTURE GENERATORS (For Micro-Realism)
+    // PROCEDURAL TEXTURE GENERATORS
     // =========================================================================
     // A. Coffee grounds bump texture
     const generateGroundsTexture = () => {
@@ -156,11 +167,10 @@ export default function HeroCenter3DCanvas({
       ctx.fillStyle = "#1e130c";
       ctx.fillRect(0, 0, 512, 512);
 
-      // Micro speckles and coffee granules
-      for (let i = 0; i < 4000; i++) {
+      for (let i = 0; i < 4500; i++) {
         const x = Math.random() * 512;
         const y = Math.random() * 512;
-        const radius = Math.random() * 2.5 + 0.8;
+        const radius = Math.random() * 2.2 + 0.8;
         const shade = Math.random() > 0.4 ? "#2e190d" : Math.random() > 0.5 ? "#120a06" : "#4a2a14";
         ctx.fillStyle = shade;
         ctx.beginPath();
@@ -174,46 +184,40 @@ export default function HeroCenter3DCanvas({
       return tex;
     };
 
-    // B. Roasted coffee bean cellular bump texture
-    const generateBeanBumpTexture = () => {
+    // B. Knurled diamond aluminum texture for Grinder Body
+    const generateKnurlingTexture = () => {
       const c = document.createElement("canvas");
-      c.width = 1024;
-      c.height = 1024;
+      c.width = 512;
+      c.height = 512;
       const ctx = c.getContext("2d")!;
-      ctx.fillStyle = "#808080";
-      ctx.fillRect(0, 0, 1024, 1024);
+      ctx.fillStyle = "#141311";
+      ctx.fillRect(0, 0, 512, 512);
 
-      // Roasted micro-cracks
-      ctx.strokeStyle = "#404040";
-      ctx.lineWidth = 1.5;
-      for (let i = 0; i < 120; i++) {
+      ctx.strokeStyle = "#383530";
+      ctx.lineWidth = 2.0;
+
+      // Diagonal crosshatch diamond lines
+      const step = 16;
+      for (let x = -512; x < 1024; x += step) {
         ctx.beginPath();
-        let px = Math.random() * 1024;
-        let py = Math.random() * 1024;
-        ctx.moveTo(px, py);
-        for (let step = 0; step < 4; step++) {
-          px += (Math.random() - 0.5) * 35;
-          py += (Math.random() - 0.5) * 35;
-          ctx.lineTo(px, py);
-        }
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + 512, 512);
         ctx.stroke();
-      }
 
-      // Fine cellular pore noise
-      for (let i = 0; i < 6000; i++) {
-        const x = Math.random() * 1024;
-        const y = Math.random() * 1024;
-        ctx.fillStyle = Math.random() > 0.5 ? "#999999" : "#666666";
-        ctx.fillRect(x, y, 2, 2);
+        ctx.beginPath();
+        ctx.moveTo(x, 512);
+        ctx.lineTo(x + 512, 0);
+        ctx.stroke();
       }
 
       const tex = new THREE.CanvasTexture(c);
       tex.wrapS = THREE.RepeatWrapping;
       tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(4, 4);
       return tex;
     };
 
-    // C. Caustic light pool texture on the base stand
+    // C. Caustic light pool texture on base stand
     const generateCausticTexture = () => {
       const c = document.createElement("canvas");
       c.width = 256;
@@ -230,7 +234,7 @@ export default function HeroCenter3DCanvas({
     };
 
     const groundsTexture = generateGroundsTexture();
-    const beanBumpTexture = generateBeanBumpTexture();
+    const knurlingTexture = generateKnurlingTexture();
     const causticTexture = generateCausticTexture();
 
     // =========================================================================
@@ -241,7 +245,7 @@ export default function HeroCenter3DCanvas({
     scene.add(dripperGroup);
     dripperGroupRef.current = dripperGroup;
 
-    // A. Matte Obsidian & Brushed Brass Stand Base
+    // A. Stand Base Plate
     const basePlateGeom = new THREE.BoxGeometry(2.4, 0.2, 2.8);
     const basePlateMat = new THREE.MeshPhysicalMaterial({
       color: 0x11100e,
@@ -256,7 +260,7 @@ export default function HeroCenter3DCanvas({
     basePlate.receiveShadow = true;
     dripperGroup.add(basePlate);
 
-    // Warm Caustic Light Pool on the Base Plate
+    // Caustic Light Pool
     const causticDiscGeom = new THREE.PlaneGeometry(1.6, 1.6);
     causticDiscGeom.rotateX(-Math.PI / 2);
     const causticDiscMat = new THREE.MeshBasicMaterial({
@@ -269,7 +273,7 @@ export default function HeroCenter3DCanvas({
     causticDisc.position.set(0, -1.77, 0);
     dripperGroup.add(causticDisc);
 
-    // Precision Brushed Brass Accent Trim
+    // Brushed Brass Trim
     const brassMat = new THREE.MeshPhysicalMaterial({
       color: 0xd4a054,
       metalness: 0.92,
@@ -285,7 +289,7 @@ export default function HeroCenter3DCanvas({
     baseRim.position.y = -1.95;
     dripperGroup.add(baseRim);
 
-    // B. Vertical Solid Brass Support Rod & Knurled Collar
+    // Solid Brass Rod & Knurled Knob
     const rodGeom = new THREE.CylinderGeometry(0.048, 0.048, 3.4, 32);
     const standRod = new THREE.Mesh(rodGeom, brassMat);
     standRod.position.set(0.92, -0.18, -0.92);
@@ -303,7 +307,7 @@ export default function HeroCenter3DCanvas({
     standArm.position.set(0.46, 0.72, -0.92);
     dripperGroup.add(standArm);
 
-    // Matte Obsidian Octagonal Collar holding the dripper
+    // Matte Obsidian Octagonal Collar
     const collarGeom = new THREE.CylinderGeometry(0.92, 0.88, 0.08, 8);
     const collarMat = new THREE.MeshPhysicalMaterial({
       color: 0x161513,
@@ -315,7 +319,7 @@ export default function HeroCenter3DCanvas({
     collar.position.set(0, 0.72, 0);
     dripperGroup.add(collar);
 
-    // C. 20-Faceted Smoked Crystal Origami Dripper (True Refractive Glass)
+    // 20-Faceted Smoked Crystal Origami Dripper
     const coneRadiusTop = 0.98;
     const coneRadiusBottom = 0.16;
     const coneHeight = 1.15;
@@ -362,8 +366,9 @@ export default function HeroCenter3DCanvas({
     dripperMesh.position.set(0, 1.25, 0);
     dripperMesh.castShadow = true;
     dripperGroup.add(dripperMesh);
+    dripperConeMeshRef.current = dripperMesh;
 
-    // D. Fluted Bleached Wave Paper Filter
+    // Fluted Bleached Wave Paper Filter
     const filterGeom = new THREE.CylinderGeometry(
       coneRadiusTop * 0.96,
       coneRadiusBottom * 1.04,
@@ -381,10 +386,10 @@ export default function HeroCenter3DCanvas({
     const filterMesh = new THREE.Mesh(filterGeom, filterMat);
     filterMesh.position.set(0, 1.27, 0);
     dripperGroup.add(filterMesh);
+    filterMeshRef.current = filterMesh;
 
-    // E. Realistic Coffee Grounds Slurry Bed with Extraction Crater
+    // Saturated Coffee Grounds Slurry Bed with Crater
     const slurryGeom = new THREE.CylinderGeometry(0.72, 0.28, 0.48, 32);
-    // Indent center crater where water pours into the slurry
     const sPos = slurryGeom.attributes.position;
     const vS = new THREE.Vector3();
     for (let i = 0; i < sPos.count; i++) {
@@ -410,8 +415,24 @@ export default function HeroCenter3DCanvas({
     const slurryMesh = new THREE.Mesh(slurryGeom, slurryMat);
     slurryMesh.position.set(0, 1.08, 0);
     dripperGroup.add(slurryMesh);
+    slurryMeshRef.current = slurryMesh;
 
-    // F. Borosilicate Glass Decanter Server (Ultra Clear Refraction)
+    // Interactive Pouring Water Stream (Laminar Crystal Stream)
+    const streamGeom = new THREE.CylinderGeometry(0.025, 0.032, 1.4, 16);
+    const streamMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      transmission: 0.98,
+      transparent: true,
+      opacity: 0.0,
+      roughness: 0.02,
+      ior: 1.33,
+    });
+    const waterStream = new THREE.Mesh(streamGeom, streamMat);
+    waterStream.position.set(0, 1.85, 0);
+    dripperGroup.add(waterStream);
+    waterStreamRef.current = waterStream;
+
+    // Borosilicate Glass Decanter Server
     const carafePoints: THREE.Vector2[] = [];
     carafePoints.push(new THREE.Vector2(0.0, -1.82));
     carafePoints.push(new THREE.Vector2(0.86, -1.82));
@@ -439,15 +460,16 @@ export default function HeroCenter3DCanvas({
     carafeMesh.position.set(0, 0, 0);
     carafeMesh.castShadow = true;
     dripperGroup.add(carafeMesh);
+    carafeMeshRef.current = carafeMesh;
 
-    // Delicate Glass Handle
+    // Glass Handle
     const handleGeom = new THREE.TorusGeometry(0.4, 0.045, 16, 32, Math.PI * 0.86);
     handleGeom.rotateZ(-Math.PI * 0.42);
     const carafeHandle = new THREE.Mesh(handleGeom, borosilicateMat);
     carafeHandle.position.set(0.85, -1.0, 0);
     dripperGroup.add(carafeHandle);
 
-    // G. Volumetric Amber Coffee Liquid with Internal Light Scattering
+    // Amber Coffee Liquid
     const liquidPoints: THREE.Vector2[] = [];
     liquidPoints.push(new THREE.Vector2(0.0, -1.8));
     liquidPoints.push(new THREE.Vector2(0.84, -1.8));
@@ -489,7 +511,7 @@ export default function HeroCenter3DCanvas({
     dripperGroup.add(rippleMesh);
     rippleMeshRef.current = rippleMesh;
 
-    // H. Dynamic Falling Amber Coffee Droplets
+    // Falling Droplets
     const dropletGeom = new THREE.SphereGeometry(0.042, 16, 16);
     dropletGeom.scale(0.75, 1.4, 0.75);
     const dropletMat = new THREE.MeshPhysicalMaterial({
@@ -514,7 +536,7 @@ export default function HeroCenter3DCanvas({
     }
     dropletsRef.current = droplets;
 
-    // I. Hot Volumetric Steam Vapor Particles
+    // Volumetric Steam Vapor Particles
     const steamCount = 42;
     const steamGeom = new THREE.BufferGeometry();
     const steamPositions = new Float32Array(steamCount * 3);
@@ -539,7 +561,7 @@ export default function HeroCenter3DCanvas({
     dripperGroup.add(steamParticles);
     steamParticlesRef.current = steamParticles;
 
-    // J. Golden 360° Orbit Ring with Degree Hash Marks
+    // Golden 360° Orbit Ring
     const orbitRingGeom = new THREE.TorusGeometry(2.15, 0.012, 16, 72);
     orbitRingGeom.rotateX(Math.PI * 0.38);
     orbitRingGeom.rotateY(Math.PI * 0.12);
@@ -559,128 +581,112 @@ export default function HeroCenter3DCanvas({
     tracerOrbitRef.current = tracerMesh;
 
     // =========================================================================
-    // BUILD MODE 2: MASTER SPECIALTY BEAN & FLAVOR CONSTELLATION
+    // BUILD MODE 2: THE PRECISION TITANIUM BURR MANUAL GRINDER
     // =========================================================================
-    const beanGroup = new THREE.Group();
-    scene.add(beanGroup);
-    beanGroupRef.current = beanGroup;
+    const grinderGroup = new THREE.Group();
+    grinderGroup.position.set(0, 0.1, 0);
+    scene.add(grinderGroup);
+    grinderGroupRef.current = grinderGroup;
 
-    // Sculpted Arabica Bean with Micro-Bump & Fissure
-    const beanRadius = 1.6;
-    const beanGeom = new THREE.SphereGeometry(beanRadius, 64, 48);
-    const beanPos = beanGeom.attributes.position;
-    const vBean = new THREE.Vector3();
-
-    for (let i = 0; i < beanPos.count; i++) {
-      vBean.fromBufferAttribute(beanPos, i);
-
-      // Arabica oval seed proportions
-      vBean.z *= 0.64;
-      vBean.y *= 1.38;
-
-      if (vBean.z < 0) {
-        vBean.z *= 0.74;
-      }
-
-      // Organic center fissure on front
-      if (vBean.z > 0.05) {
-        const distFromCenterLine = Math.abs(vBean.x);
-        if (distFromCenterLine < 0.4) {
-          const depth = (0.4 - distFromCenterLine) * 0.96;
-          const sCurve = Math.sin((vBean.y / beanRadius) * Math.PI) * 0.08;
-          vBean.z -= depth * Math.cos((vBean.y / 2.2) * Math.PI * 0.5);
-          vBean.x += sCurve;
-        }
-      }
-
-      beanPos.setXYZ(i, vBean.x, vBean.y, vBean.z);
-    }
-    beanGeom.computeVertexNormals();
-
-    const beanMat = new THREE.MeshPhysicalMaterial({
-      color: 0x241710,
-      bumpMap: beanBumpTexture,
-      bumpScale: 0.022,
-      roughness: 0.44,
-      metalness: 0.12,
-      clearcoat: 0.5,
-      clearcoatRoughness: 0.2,
-      reflectivity: 0.9,
-      envMapIntensity: 1.8,
+    // A. Main Grinder Cylinder Body (Knurled Diamond Aluminum)
+    const grinderBodyGeom = new THREE.CylinderGeometry(0.72, 0.72, 1.85, 36);
+    const grinderBodyMat = new THREE.MeshPhysicalMaterial({
+      color: 0x141311,
+      bumpMap: knurlingTexture,
+      bumpScale: 0.028,
+      roughness: 0.45,
+      metalness: 0.75,
+      clearcoat: 0.35,
+      clearcoatRoughness: 0.25,
+      reflectivity: 0.85,
     });
-    const beanMesh = new THREE.Mesh(beanGeom, beanMat);
-    beanMesh.castShadow = true;
-    beanGroup.add(beanMesh);
+    const grinderBody = new THREE.Mesh(grinderBodyGeom, grinderBodyMat);
+    grinderBody.position.y = 0.35;
+    grinderBody.castShadow = true;
+    grinderGroup.add(grinderBody);
 
-    // Golden Chaff Inlay in Center Fissure
-    const chaffGeom = new THREE.PlaneGeometry(0.2, 2.7, 8, 32);
-    const chaffPos = chaffGeom.attributes.position;
-    const vChaff = new THREE.Vector3();
-    for (let i = 0; i < chaffPos.count; i++) {
-      vChaff.fromBufferAttribute(chaffPos, i);
-      vChaff.z = 0.58 + Math.sin(vChaff.y * 3) * 0.04;
-      vChaff.x += Math.sin((vChaff.y / 1.35) * Math.PI) * 0.06;
-      chaffPos.setXYZ(i, vChaff.x, vChaff.y, vChaff.z);
-    }
-    chaffGeom.computeVertexNormals();
+    // B. Micron Click Adjustment Collar (Solid Brushed Brass with Hash Marks)
+    const collarRingGeom = new THREE.CylinderGeometry(0.735, 0.735, 0.24, 36);
+    const collarRing = new THREE.Mesh(collarRingGeom, brassMat);
+    collarRing.position.y = -0.65;
+    grinderGroup.add(collarRing);
 
-    const chaffMat = new THREE.MeshPhysicalMaterial({
-      color: 0xf5d996,
-      metalness: 0.65,
-      roughness: 0.28,
-      clearcoat: 0.85,
-      side: THREE.DoubleSide,
-      envMapIntensity: 2.2,
+    // C. Lower Catch Cup (Borosilicate Glass with Ground Coffee Inside)
+    const catchCupGeom = new THREE.CylinderGeometry(0.72, 0.69, 1.25, 36, 1, true);
+    const catchCupMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      transmission: 0.96,
+      transparent: true,
+      opacity: 1.0,
+      roughness: 0.03,
+      metalness: 0.05,
+      ior: 1.51,
+      thickness: 0.6,
+      clearcoat: 1.0,
     });
-    const chaffMesh = new THREE.Mesh(chaffGeom, chaffMat);
-    beanGroup.add(chaffMesh);
+    const catchCup = new THREE.Mesh(catchCupGeom, catchCupMat);
+    catchCup.position.y = -1.38;
+    catchCup.castShadow = true;
+    grinderGroup.add(catchCup);
 
-    // Orbital Rings
-    const ring1Geom = new THREE.TorusGeometry(2.38, 0.012, 16, 72);
-    ring1Geom.rotateX(Math.PI * 0.4);
-    ring1Geom.rotateY(Math.PI * 0.15);
-    const ring1 = new THREE.Mesh(ring1Geom, orbitRingMat);
-    beanGroup.add(ring1);
+    // Catch cup base disc
+    const cupBaseGeom = new THREE.CylinderGeometry(0.69, 0.69, 0.05, 36);
+    const cupBase = new THREE.Mesh(cupBaseGeom, catchCupMat);
+    cupBase.position.y = -2.0;
+    grinderGroup.add(cupBase);
 
-    const ring2Geom = new THREE.TorusGeometry(2.68, 0.009, 16, 72);
-    ring2Geom.rotateX(-Math.PI * 0.3);
-    ring2Geom.rotateZ(Math.PI * 0.25);
-    const ring2 = new THREE.Mesh(ring2Geom, orbitRingMat);
-    beanGroup.add(ring2);
+    // Ground Coffee inside Catch Cup
+    const groundCoffeeGeom = new THREE.CylinderGeometry(0.66, 0.64, 0.85, 32);
+    const groundCoffee = new THREE.Mesh(groundCoffeeGeom, slurryMat);
+    groundCoffee.position.y = -1.55;
+    grinderGroup.add(groundCoffee);
 
-    // Floating Crystalline Aroma Terpene Nodes
-    const aromaNodes: THREE.Group[] = [];
-    const aromaSpecs = [
-      { geom: new THREE.IcosahedronGeometry(0.16, 0), color: 0xfcd34d, pos: [1.8, 1.2, 0.8] },
-      { geom: new THREE.OctahedronGeometry(0.15, 0), color: 0xffedd5, pos: [-1.9, 0.9, -0.6] },
-      { geom: new THREE.DodecahedronGeometry(0.14, 0), color: 0xf59e0b, pos: [1.5, -1.4, -0.7] },
-      { geom: new THREE.IcosahedronGeometry(0.13, 0), color: 0xf43f5e, pos: [-1.6, -1.1, 0.9] },
+    // D. Top Cap & Rotating Brass Crank Arm with Walnut Wood Knob
+    const crankGroup = new THREE.Group();
+    crankGroup.position.set(0, 1.28, 0);
+    grinderGroup.add(crankGroup);
+    crankGroupRef.current = crankGroup;
+
+    // Center Top Cap
+    const topCapGeom = new THREE.CylinderGeometry(0.24, 0.24, 0.16, 24);
+    const topCap = new THREE.Mesh(topCapGeom, brassMat);
+    crankGroup.add(topCap);
+
+    // Crank Arm Spine
+    const crankArmPoints = [
+      new THREE.Vector3(0, 0.08, 0),
+      new THREE.Vector3(0.5, 0.12, 0),
+      new THREE.Vector3(1.2, 0.35, 0),
+      new THREE.Vector3(1.5, 0.65, 0),
     ];
+    const crankCurve = new THREE.CatmullRomCurve3(crankArmPoints);
+    const crankTubeGeom = new THREE.TubeGeometry(crankCurve, 24, 0.045, 16, false);
+    const crankArm = new THREE.Mesh(crankTubeGeom, brassMat);
+    crankGroup.add(crankArm);
 
-    aromaSpecs.forEach((spec) => {
-      const g = new THREE.Group();
-      const wireMat = new THREE.MeshStandardMaterial({
-        color: spec.color,
-        wireframe: true,
-        roughness: 0.15,
-        metalness: 0.95,
-      });
-      const wireMesh = new THREE.Mesh(spec.geom, wireMat);
-      g.add(wireMesh);
-
-      const coreMat = new THREE.MeshBasicMaterial({ color: spec.color });
-      const core = new THREE.Mesh(new THREE.SphereGeometry(0.065, 8, 8), coreMat);
-      g.add(core);
-
-      g.position.set(spec.pos[0], spec.pos[1], spec.pos[2]);
-      beanGroup.add(g);
-      aromaNodes.push(g);
+    // Ergonomic Dark Walnut Wood Knob
+    const knobWoodGeom = new THREE.SphereGeometry(0.26, 24, 24);
+    knobWoodGeom.scale(0.85, 1.35, 0.85);
+    const walnutMat = new THREE.MeshPhysicalMaterial({
+      color: 0x3d2314,
+      roughness: 0.55,
+      metalness: 0.05,
+      clearcoat: 0.25,
+      clearcoatRoughness: 0.3,
     });
-    aromaNodesRef.current = aromaNodes;
+    const walnutKnob = new THREE.Mesh(knobWoodGeom, walnutMat);
+    walnutKnob.position.set(1.5, 0.95, 0);
+    crankGroup.add(walnutKnob);
+
+    // Orbit Ring around Grinder
+    const grinderOrbitGeom = new THREE.TorusGeometry(2.35, 0.012, 16, 72);
+    grinderOrbitGeom.rotateX(Math.PI * 0.42);
+    const grinderOrbit = new THREE.Mesh(grinderOrbitGeom, orbitRingMat);
+    grinderGroup.add(grinderOrbit);
 
     // Initial scale state
     dripperGroup.scale.set(stateRef.current.dripperScale, stateRef.current.dripperScale, stateRef.current.dripperScale);
-    beanGroup.scale.set(stateRef.current.beanScale, stateRef.current.beanScale, stateRef.current.beanScale);
+    grinderGroup.scale.set(stateRef.current.grinderScale, stateRef.current.grinderScale, stateRef.current.grinderScale);
 
     // =========================================================================
     // MOUSE & TOUCH EVENT LISTENERS (360° Drag + Momentum)
@@ -781,7 +787,15 @@ export default function HeroCenter3DCanvas({
       stateRef.current.zoom += (stateRef.current.targetZoom - stateRef.current.zoom) * 0.08;
 
       stateRef.current.dripperScale += (stateRef.current.targetDripperScale - stateRef.current.dripperScale) * 0.08;
-      stateRef.current.beanScale += (stateRef.current.targetBeanScale - stateRef.current.beanScale) * 0.08;
+      stateRef.current.grinderScale += (stateRef.current.targetGrinderScale - stateRef.current.grinderScale) * 0.08;
+
+      // Exploded View target lerp
+      const targetExplode = isExploded ? 1.0 : 0.0;
+      stateRef.current.explodeProgress += (targetExplode - stateRef.current.explodeProgress) * 0.08;
+
+      // Pouring Stream alpha lerp
+      const targetPour = isPouring ? 1.0 : 0.0;
+      stateRef.current.pourStreamAlpha += (targetPour - stateRef.current.pourStreamAlpha) * 0.12;
 
       // Update Dripper Group
       if (dripperGroupRef.current) {
@@ -792,22 +806,59 @@ export default function HeroCenter3DCanvas({
         dripperGroupRef.current.rotation.x = stateRef.current.currRotX;
         dripperGroupRef.current.rotation.y = stateRef.current.currRotY;
         dripperGroupRef.current.position.y = -0.2 + Math.sin(elapsed * 1.5) * 0.04;
+
+        // Apply Exploded View translation
+        if (dripperConeMeshRef.current) {
+          dripperConeMeshRef.current.position.y = 1.25 + stateRef.current.explodeProgress * 0.65;
+        }
+        if (filterMeshRef.current) {
+          filterMeshRef.current.position.y = 1.27 + stateRef.current.explodeProgress * 0.85;
+        }
+        if (slurryMeshRef.current) {
+          slurryMeshRef.current.position.y = 1.08 + stateRef.current.explodeProgress * 0.85;
+          // Blooming pulse when pouring
+          if (isPouring) {
+            slurryMeshRef.current.scale.set(1.05 + Math.sin(elapsed * 6) * 0.02, 1.08, 1.05 + Math.sin(elapsed * 6) * 0.02);
+          } else {
+            slurryMeshRef.current.scale.set(1, 1, 1);
+          }
+        }
+        if (carafeMeshRef.current) {
+          carafeMeshRef.current.position.y = -stateRef.current.explodeProgress * 0.45;
+        }
+        if (liquidMeshRef.current) {
+          liquidMeshRef.current.position.y = -stateRef.current.explodeProgress * 0.45;
+        }
+
+        // Pour stream visibility
+        if (waterStreamRef.current) {
+          const mat = waterStreamRef.current.material as THREE.MeshPhysicalMaterial;
+          mat.opacity = stateRef.current.pourStreamAlpha * 0.85;
+          waterStreamRef.current.scale.x = 0.8 + Math.sin(elapsed * 12) * 0.15;
+          waterStreamRef.current.scale.z = 0.8 + Math.cos(elapsed * 12) * 0.15;
+        }
       }
 
-      // Update Bean Group
-      if (beanGroupRef.current) {
-        const bScale = stateRef.current.beanScale * stateRef.current.zoom;
-        beanGroupRef.current.scale.set(bScale, bScale, bScale);
-        beanGroupRef.current.visible = stateRef.current.beanScale > 0.005;
+      // Update Grinder Group
+      if (grinderGroupRef.current) {
+        const gScale = stateRef.current.grinderScale * stateRef.current.zoom;
+        grinderGroupRef.current.scale.set(gScale, gScale, gScale);
+        grinderGroupRef.current.visible = stateRef.current.grinderScale > 0.005;
 
-        beanGroupRef.current.rotation.x = stateRef.current.currRotX + Math.sin(elapsed * 0.8) * 0.06;
-        beanGroupRef.current.rotation.y = stateRef.current.currRotY + elapsed * 0.08;
-        beanGroupRef.current.position.y = Math.sin(elapsed * 1.8) * 0.06;
+        grinderGroupRef.current.rotation.x = stateRef.current.currRotX + 0.1;
+        grinderGroupRef.current.rotation.y = stateRef.current.currRotY;
+        grinderGroupRef.current.position.y = 0.1 + Math.sin(elapsed * 1.8) * 0.05;
+
+        // Rotate the crank handle smoothly
+        if (crankGroupRef.current) {
+          crankGroupRef.current.rotation.y = elapsed * 0.9;
+        }
       }
 
-      // Droplets & Ripple Animation
+      // Droplets & Ripple Animation (Accelerates when pouring)
+      const dripSpeed = isPouring ? 0.045 : 0.018;
       dropletsRef.current.forEach((drop, idx) => {
-        drop.position.y -= 0.018 + idx * 0.004;
+        drop.position.y -= dripSpeed + idx * 0.005;
         if (drop.position.y < -0.92) {
           drop.position.y = 0.65;
           if (rippleMeshRef.current) {
@@ -820,9 +871,9 @@ export default function HeroCenter3DCanvas({
       if (rippleMeshRef.current) {
         const rMat = rippleMeshRef.current.material as THREE.MeshBasicMaterial;
         if (rMat.opacity > 0.02) {
-          rippleMeshRef.current.scale.x += 0.04;
-          rippleMeshRef.current.scale.z += 0.04;
-          rMat.opacity *= 0.94;
+          rippleMeshRef.current.scale.x += isPouring ? 0.07 : 0.04;
+          rippleMeshRef.current.scale.z += isPouring ? 0.07 : 0.04;
+          rMat.opacity *= isPouring ? 0.91 : 0.94;
         }
       }
 
@@ -837,9 +888,10 @@ export default function HeroCenter3DCanvas({
       // Volumetric Steam Particles
       if (steamParticlesRef.current) {
         const posAttr = steamParticlesRef.current.geometry.attributes.position;
+        const steamSpeed = isPouring ? 0.018 : 0.009;
         for (let i = 0; i < steamCount; i++) {
           let y = posAttr.getY(i);
-          y += 0.009;
+          y += steamSpeed;
           if (y > 2.8) {
             y = 1.3;
             posAttr.setX(i, (Math.random() - 0.5) * 0.55);
@@ -863,14 +915,6 @@ export default function HeroCenter3DCanvas({
         );
       }
 
-      // Aroma Terpene Nodes
-      aromaNodesRef.current.forEach((node, idx) => {
-        node.rotation.x += 0.02;
-        node.rotation.y += 0.03;
-        node.position.y += Math.sin(elapsed * 2 + idx) * 0.003;
-      });
-
-      // Key light tracking
       keyLight.position.x = 4.5 + Math.sin(stateRef.current.currRotY) * 2.5;
 
       renderer.render(scene, camera);
@@ -878,9 +922,7 @@ export default function HeroCenter3DCanvas({
 
     renderLoop();
 
-    // =========================================================================
-    // CLEANUP
-    // =========================================================================
+    // Cleanup
     return () => {
       container.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mousemove", handleMouseMove);
@@ -900,7 +942,7 @@ export default function HeroCenter3DCanvas({
       pmremGenerator.dispose();
       envTexture.dispose();
       groundsTexture.dispose();
-      beanBumpTexture.dispose();
+      knurlingTexture.dispose();
       causticTexture.dispose();
 
       basePlateGeom.dispose();
@@ -920,6 +962,8 @@ export default function HeroCenter3DCanvas({
       filterMat.dispose();
       slurryGeom.dispose();
       slurryMat.dispose();
+      streamGeom.dispose();
+      streamMat.dispose();
       carafeGeom.dispose();
       borosilicateMat.dispose();
       handleGeom.dispose();
@@ -935,12 +979,18 @@ export default function HeroCenter3DCanvas({
       orbitRingMat.dispose();
       tracerGeom.dispose();
       tracerMat.dispose();
-      beanGeom.dispose();
-      beanMat.dispose();
-      chaffGeom.dispose();
-      chaffMat.dispose();
-      ring1Geom.dispose();
-      ring2Geom.dispose();
+      grinderBodyGeom.dispose();
+      grinderBodyMat.dispose();
+      collarRingGeom.dispose();
+      catchCupGeom.dispose();
+      catchCupMat.dispose();
+      cupBaseGeom.dispose();
+      groundCoffeeGeom.dispose();
+      topCapGeom.dispose();
+      crankTubeGeom.dispose();
+      knobWoodGeom.dispose();
+      walnutMat.dispose();
+      grinderOrbitGeom.dispose();
       shadowGeom.dispose();
       shadowMat.dispose();
     };
