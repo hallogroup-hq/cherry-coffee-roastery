@@ -77,7 +77,7 @@ Menutup akhir pekan dengan menikmati kopi, makanan tradisional, dinginnya Goalpa
 
 Kudapan tradisional seperti pisang goreng hangat bertabur gula aren dan singkong keju renyah melengkapi keasaman bersih dari single origin Selabintana. Rasa manis alami makanan berpadu dengan body kopi yang lembut, menciptakan kenyamanan yang sulit dijumpai di kedai kopi perkotaan modern.
 
-Terima kasih yang sudah berkunjung dan menikmati akhir pekan bersama di @cherrybar.id. Tempat ini akan selalu ada untukmu ketika dunia terasa terlalu bising.`,
+Terima kasih yang sudah berkunjung dan menikmati akhir pekan bersama di @cherrycoffeeroastery. Tempat ini akan selalu ada untukmu ketika dunia terasa terlalu bising.`,
       en: `Cooling the mind, listening to the gentle murmur of the mountain river while sipping our artisan pour-over. Isn't that the purest way to embrace the weekend?
 
 Behind our cedar slow bar, the mountain stream tumbling over mossy river stones serves as an organic metronome. It accompanies every deliberate drop of manual extraction. Here, notifications fall silent; sirens are replaced by wind rustling ancient pines.
@@ -86,7 +86,7 @@ Concluding the weekend with honest coffee, traditional bites, the crisp chill of
 
 Traditional delicacies—warm fried plantains dusted with unrefined palm nectar and crispy mountain cassava—dialogue harmoniously with the pristine acidity of Selabintana Full Wash. The balance is quiet, unpretentious, yet profoundly restorative.
 
-Gratitude to all souls who journeyed to share this stillness with us at @cherrybar.id. This sanctuary will always await whenever the world grows too loud.`,
+Gratitude to all souls who journeyed to share this stillness with us at @cherrycoffeeroastery. This sanctuary will always await whenever the world grows too loud.`,
     },
     date: "02 September 2026",
     readTime: "3 min read",

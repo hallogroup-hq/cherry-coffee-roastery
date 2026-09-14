@@ -70,7 +70,7 @@ export default function ArticlePage({
       {/* Article Content / Reading Flow */}
       <article className="prose prose-invert max-w-none space-y-6 text-base sm:text-lg font-sans text-[#DCD5C8] leading-relaxed">
         {paragraphs.map((p, idx) => {
-          // Check if paragraph is an authentic quote from @cherrybar.id
+          // Check if paragraph is an authentic quote from @cherrycoffeeroastery
           if (
             p.includes("Ditengah segala yang serba cepat") ||
             p.includes("Mendinginkan pikiran") ||
@@ -105,12 +105,12 @@ export default function ArticlePage({
         </Link>
 
         <a
-          href="https://instagram.com/cherrybar.id"
+          href="https://www.instagram.com/cherrycoffeeroastery"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs font-mono-data text-[#C99454] hover:underline"
         >
-          Ikuti Cerita Lainnya di Instagram @cherrybar.id
+          Ikuti Cerita Lainnya di Instagram @cherrycoffeeroastery
         </a>
       </div>
     </div>

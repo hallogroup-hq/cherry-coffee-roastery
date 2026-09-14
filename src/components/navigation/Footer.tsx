@@ -94,13 +94,13 @@ export default function Footer() {
             <ul className="space-y-3 text-xs font-mono-data">
               <li>
                 <a
-                  href="https://instagram.com/cherrybar.id"
+                  href="https://www.instagram.com/cherrycoffeeroastery"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-2 text-[#DCD5C8] hover:text-[#C99454] transition-colors group"
                 >
                   <InstagramIcon className="w-4 h-4 text-[#C99454]" />
-                  <span>@cherrybar.id</span>
+                  <span>@cherrycoffeeroastery</span>
                   <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </li>

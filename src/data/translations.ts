@@ -127,7 +127,7 @@ export const translations: Record<Language, TranslationContent> = {
       quote2:
         "Mendinginkan pikiran, mendengarkan suara aliran sungai, sambil meminum kopi racikan kami. Bukankah itu ide yang bagus untuk menikmati akhir pekan?",
       quote3:
-        "Menutup akhir pekan dengan menikmati kopi, makanan tradisional, dinginnya goalpara, dilengkapin lantunan musik yang membuat suasananya terasa sempurna.\n\nTerima kasih yang sudah berkunjung dan menikmati akhir pekan bersama di @cherrybar.id",
+        "Menutup akhir pekan dengan menikmati kopi, makanan tradisional, dinginnya goalpara, dilengkapin lantunan musik yang membuat suasananya terasa sempurna.\n\nTerima kasih yang sudah berkunjung dan menikmati akhir pekan bersama di @cherrycoffeeroastery",
       yearEndTitle: "Perjalanan & Titik Ini",
       yearEndText:
         "Tahun datang dengan banyak hal yang tak terduga. Perjuangan yang tak selalu terlihat, pengorbanan yang sering kali tak sempat terucap.\n\nDan entah bagaimana, kita sampai di titik ini. Berdiri membawa semua bekal—lelah, belajar, dan bertumbuh.\n\nBeri sedikit apresiasi untuk dirimu. Duduk sejenak. Nikmati kopi dan kudapan nikmat yang kami hidangkan, di sini.",
@@ -193,7 +193,7 @@ export const translations: Record<Language, TranslationContent> = {
       slowBarLocation: "Goalpara Estate Camp, Cisarua, Sukabumi, Jawa Barat 43151",
       hours: "Sabtu & Minggu: 08.00 - 18.00 WIB",
       rights: "Hak Cipta Dilindungi. Cherry Coffee Roastery.",
-      instagram: "Ikuti @cherrybar.id",
+      instagram: "Ikuti @cherrycoffeeroastery",
       spotify: "Slow Bar Playlist",
       contactConcierge: "Hubungi Concierge (WhatsApp)",
     },
@@ -232,7 +232,7 @@ export const translations: Record<Language, TranslationContent> = {
       quote2:
         "Cooling the mind, listening to the gentle murmur of the mountain river while sipping our artisan pour-over. Isn't that the purest way to embrace the weekend?",
       quote3:
-        "Concluding the weekend with honest coffee, traditional bites, the crisp chill of Goalpara, harmonized by soothing melodies that make the atmosphere serene.\n\nGratitude to all souls who journeyed to share this stillness with us at @cherrybar.id",
+        "Concluding the weekend with honest coffee, traditional bites, the crisp chill of Goalpara, harmonized by soothing melodies that make the atmosphere serene.\n\nGratitude to all souls who journeyed to share this stillness with us at @cherrycoffeeroastery",
       yearEndTitle: "The Journey & This Still Point",
       yearEndText:
         "Seasons arrive with the unexpected. Quiet struggles rarely witnessed, devotion softly spoken.\n\nYet somehow, we arrive at this very milestone. Carrying every trial, every lesson, and our collective growth.\n\nOffer a measure of grace to yourself. Sit quietly. Partake in the coffee and comforting table we prepare for you here.",
@@ -298,7 +298,7 @@ export const translations: Record<Language, TranslationContent> = {
       slowBarLocation: "Goalpara Estate Camp, Cisarua, Sukabumi, West Java 43151",
       hours: "Saturday & Sunday: 08:00 - 18:00 WIB",
       rights: "All Rights Reserved. Cherry Coffee Roastery.",
-      instagram: "Follow @cherrybar.id",
+      instagram: "Follow @cherrycoffeeroastery",
       spotify: "Slow Bar Playlist",
       contactConcierge: "Contact VIP Concierge (WhatsApp)",
     },

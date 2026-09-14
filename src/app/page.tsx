@@ -28,7 +28,7 @@ export default function HomePage() {
       {/* 1. EDITORIAL ATELIER HERO (Tactile Macro Photography & Optical Loupe) */}
       <EditorialHero />
 
-      {/* 2. THE LITERARY MANIFESTO (@cherrybar.id Slow Living Philosophy) */}
+      {/* 2. THE LITERARY MANIFESTO (@cherrycoffeeroastery Slow Living Philosophy) */}
       <EditorialManifesto />
 
       {/* 3. THE ROASTER'S ARCHIVAL LEDGER (Curated Specialty Coffee Offerings) */}

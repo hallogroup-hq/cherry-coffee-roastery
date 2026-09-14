@@ -146,7 +146,7 @@ export default function Header() {
           </nav>
           <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-[#A69E90] font-mono-data">
             <span>Goalpara Estate Camp, 1,250 MASL</span>
-            <span className="text-[#C99454]">@cherrybar.id</span>
+            <span className="text-[#C99454]">@cherrycoffeeroastery</span>
           </div>
         </div>
       )}

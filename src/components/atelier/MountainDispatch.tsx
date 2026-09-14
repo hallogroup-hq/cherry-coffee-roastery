@@ -161,13 +161,13 @@ export default function MountainDispatch() {
             </a>
 
             <a
-              href="https://instagram.com/cherrybar.id"
+              href="https://www.instagram.com/cherrycoffeeroastery"
               target="_blank"
               rel="noopener noreferrer"
               className="px-5 py-3 border border-white/15 hover:border-white/40 text-[#DCD5C8] font-mono-data text-xs uppercase tracking-wider transition-all flex items-center space-x-2"
             >
               <InstagramIcon className="w-3.5 h-3.5 text-[#C99454]" />
-              <span>Ikuti di @cherrybar.id</span>
+              <span>Ikuti di @cherrycoffeeroastery</span>
             </a>
           </div>
         </div>

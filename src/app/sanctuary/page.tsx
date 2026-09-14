@@ -131,13 +131,13 @@ export default function SanctuaryPage() {
 
           <div className="flex items-center space-x-4">
             <a
-              href="https://instagram.com/cherrybar.id"
+              href="https://www.instagram.com/cherrycoffeeroastery"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 text-xs font-mono-data text-[#C99454] hover:text-white transition-colors"
             >
               <InstagramIcon className="w-4 h-4" />
-              <span>@cherrybar.id</span>
+              <span>@cherrycoffeeroastery</span>
             </a>
 
             <a

@@ -14,7 +14,7 @@ export default function EditorialManifesto() {
           <span>·</span>
           <span>FILOSOFI MENYEDUH PERLAHAN</span>
           <span>·</span>
-          <span>@CHERRYBAR.ID</span>
+          <span>@CHERRYCOFFEEROASTERY</span>
         </div>
 
         {/* Primary Literary Quote Spread */}
@@ -44,13 +44,13 @@ export default function EditorialManifesto() {
           <div className="pt-2 flex items-center justify-between text-xs font-mono-data text-[#8C8375]">
             <span>Goalpara Estate Camp, Sukabumi</span>
             <a
-              href="https://instagram.com/cherrybar.id"
+              href="https://www.instagram.com/cherrycoffeeroastery"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#C99454] hover:text-white flex items-center space-x-1.5 transition-colors"
             >
               <InstagramIcon className="w-3.5 h-3.5" />
-              <span>@cherrybar.id</span>
+              <span>@cherrycoffeeroastery</span>
             </a>
           </div>
         </div>
