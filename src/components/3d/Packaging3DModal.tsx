@@ -1,11 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { BeanProduct, PackagingSticker } from "@/data/beans";
+import { BeanProduct } from "@/data/beans";
 import { useCart, GrindOption, WeightOption } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { X, Check, ShoppingBag, Sparkles, MessageCircle, RotateCcw } from "lucide-react";
+import Pouch3DCanvas from "@/components/3d/Pouch3DCanvas";
+import {
+  X,
+  Check,
+  ShoppingBag,
+  Sparkles,
+  MessageCircle,
+  RotateCcw,
+  Eye,
+  Layers,
+  ZoomIn,
+  Play,
+  Pause,
+  Compass,
+  Activity,
+} from "lucide-react";
 
 interface Packaging3DModalProps {
   bean: BeanProduct | null;
@@ -20,40 +34,20 @@ export default function Packaging3DModal({ bean, isOpen, onClose }: Packaging3DM
   const [selectedStickerIdx, setSelectedStickerIdx] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState<WeightOption>("200g");
   const [selectedGrind, setSelectedGrind] = useState<GrindOption>("whole_bean");
+  const [isXRay, setIsXRay] = useState(false);
+  const [isAutoRotate, setIsAutoRotate] = useState(false);
   const [isAddedSuccess, setIsAddedSuccess] = useState(false);
-
-  // Rotation angles for 3D card tilt effect
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   if (!isOpen || !bean) return null;
 
   const currentSticker = bean.stickers[selectedStickerIdx] || bean.stickers[0];
   const currentPrice = bean.prices[selectedWeight];
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const deltaX = e.clientX - dragStart.x;
-    const deltaY = e.clientY - dragStart.y;
-    setRotation({
-      x: Math.max(-25, Math.min(25, rotation.x - deltaY * 0.3)),
-      y: Math.max(-45, Math.min(45, rotation.y + deltaX * 0.3)),
-    });
-    setDragStart({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const resetRotation = () => {
-    setRotation({ x: 0, y: 0 });
+  const grindSpecs: Record<GrindOption, { label: string; microns: string; method: string }> = {
+    whole_bean: { label: "Biji Utuh (Whole Bean)", microns: "Intact Seed", method: "Fresh Grind di Rumah" },
+    espresso: { label: "Espresso Halus", microns: "200 – 300 µm", method: "Espresso Machine / Flair / Rok" },
+    filter_v60: { label: "Filter / Manual Brew", microns: "650 – 850 µm", method: "V60 / Kalita / Aeropress" },
+    french_press: { label: "Kasar (French Press / Cold Brew)", microns: "1000 – 1200 µm", method: "Cold Brew / French Press" },
   };
 
   const handleAddToCart = () => {
@@ -71,248 +65,246 @@ export default function Packaging3DModal({ bean, isOpen, onClose }: Packaging3DM
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-xl animate-in fade-in duration-300">
-      <div
-        className="relative w-full max-w-5xl bg-[#141311] border border-[#D8A86E]/20 rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row max-h-[92vh] overflow-y-auto"
-        onMouseUp={handleMouseUp}
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-black/90 backdrop-blur-2xl animate-in fade-in duration-300">
+      <div className="relative w-full max-w-6xl bg-[#11100E] border border-[#D8A86E]/30 shadow-[0_0_80px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col lg:flex-row max-h-[94vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 z-20 p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors border border-white/10"
+          className="absolute top-4 right-4 z-30 p-2.5 bg-black/60 hover:bg-black/90 text-white/70 hover:text-white transition-colors border border-white/10"
+          aria-label="Tutup Inspeksi 3D"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Left Column: Interactive 3D Bag & Official Packaging Inspection */}
-        <div
-          className="relative flex-1 min-h-[380px] lg:min-h-[560px] bg-gradient-to-b from-[#1E1C18] to-[#12110F] flex flex-col items-center justify-center p-8 select-none overflow-hidden cursor-grab active:cursor-grabbing border-b lg:border-b-0 lg:border-r border-[#D8A86E]/15"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-        >
-          {/* Terroir Background Glow */}
-          <div className="absolute w-80 h-80 bg-[#C99454]/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Left Column: Fullscreen Real WebGL Three.js Studio Canvas */}
+        <div className="relative flex-1 min-h-[460px] lg:min-h-[640px] bg-gradient-to-b from-[#181614] via-[#0F0E0C] to-[#0A0908] flex flex-col items-center justify-between p-4 sm:p-6 select-none border-b lg:border-b-0 lg:border-r border-[#D8A86E]/15 overflow-hidden">
+          {/* Top HUD Controls Overlay */}
+          <div className="relative z-20 w-full flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center space-x-2 px-3 py-1 bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono-data uppercase tracking-widest text-[#C99454]">
+              <Compass className="w-3 h-3 text-[#C99454]" />
+              <span>3D ATELIER INSPECTOR · 360° WEBGL</span>
+            </div>
 
-          {/* Reset rotation pill */}
-          <button
-            onClick={resetRotation}
-            className="absolute top-6 left-6 z-10 flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono-data text-[#DCD5C8]/80 hover:text-white transition-all"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset Sudut 3D</span>
-          </button>
+            {/* X-Ray and Auto-Rotate Mode Toggles */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setIsXRay(!isXRay)}
+                className={`px-3 py-1 text-[10px] font-mono-data uppercase tracking-wider border transition-all flex items-center space-x-1.5 ${
+                  isXRay
+                    ? "bg-[#C99454] text-[#0E0D0C] font-bold border-[#C99454] shadow-lg shadow-[#C99454]/30"
+                    : "bg-black/60 text-[#DCD5C8] border-white/10 hover:border-white/30"
+                }`}
+              >
+                <Eye className="w-3 h-3" />
+                <span>{isXRay ? "Mode Standar" : "X-Ray Biji Kopi"}</span>
+              </button>
 
-          {/* 3D Perspective Coffee Bag Container */}
-          <div
-            className="relative transition-transform duration-75 ease-out"
-            style={{
-              perspective: "1000px",
-              transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-              transformStyle: "preserve-3d",
-            }}
-          >
-            {/* The Matte Black / Earth Kraft Standup Pouch */}
-            <div className="relative w-64 sm:w-72 h-96 sm:h-[420px] bg-gradient-to-b from-[#24221E] via-[#1A1916] to-[#12110F] rounded-2xl shadow-2xl border border-white/10 p-4 flex flex-col justify-between overflow-hidden shadow-[#000000]/80">
-              {/* Bag Heat-Seal Top Zip Ridge */}
-              <div className="w-full flex flex-col items-center pt-2">
-                <div className="w-full h-1 bg-white/10 rounded-full mb-1" />
-                <div className="w-full h-0.5 bg-black/40 rounded-full" />
-                <div className="w-6 h-1.5 rounded-full bg-black/60 border border-white/5 mt-2" />
-                <span className="text-[8px] tracking-widest uppercase font-mono-data text-white/30 mt-1">
-                  Degassing Valve
-                </span>
-              </div>
-
-              {/* Official Sticker Placed with Realistic Shadow & High-Res Rendering */}
-              <div className="relative my-auto w-full group rounded-xl overflow-hidden shadow-xl border border-white/10 transition-transform duration-300">
-                <div className="relative w-full aspect-[945/405] overflow-hidden bg-black/20">
-                  <Image
-                    src={currentSticker.image}
-                    alt={`${bean.name} Sticker`}
-                    fill
-                    className="object-contain"
-                    priority
-                  />
-                </div>
-              </div>
-
-              {/* Bottom Gusset Fold Texture */}
-              <div className="w-full pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-mono-data text-[#C99454]">
-                <span>200G / 500G / 1KG</span>
-                <span className="text-[#DCD5C8]/60">ESTATE ROASTED</span>
-              </div>
+              <button
+                onClick={() => setIsAutoRotate(!isAutoRotate)}
+                className={`px-3 py-1 text-[10px] font-mono-data uppercase tracking-wider border transition-all flex items-center space-x-1.5 ${
+                  isAutoRotate
+                    ? "bg-[#C99454] text-[#0E0D0C] font-bold border-[#C99454]"
+                    : "bg-black/60 text-[#DCD5C8] border-white/10 hover:border-white/30"
+                }`}
+              >
+                {isAutoRotate ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                <span>Auto-Spin</span>
+              </button>
             </div>
           </div>
 
-          {/* Sticker Colorway Picker */}
-          {bean.stickers.length > 1 && (
-            <div className="mt-8 z-10 flex items-center space-x-3 bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
-              <span className="text-xs font-mono-data text-[#DCD5C8]/70">Pilihan Label:</span>
-              <div className="flex space-x-2">
-                {bean.stickers.map((stk, idx) => (
-                  <button
-                    key={stk.id}
-                    onClick={() => setSelectedStickerIdx(idx)}
-                    className={`text-xs px-2.5 py-1 rounded-full font-mono-data transition-all ${
-                      selectedStickerIdx === idx
-                        ? "bg-[#C99454] text-[#0E0D0C] font-bold scale-105"
-                        : "text-[#DCD5C8] hover:bg-white/10"
-                    }`}
+          {/* Three.js Real WebGL Interactive Canvas */}
+          <div className="relative w-full flex-1 flex items-center justify-center my-2">
+            <Pouch3DCanvas
+              stickerUrl={currentSticker.image}
+              weight={selectedWeight}
+              isXRay={isXRay}
+              isAutoRotate={isAutoRotate}
+            />
+
+            {/* Live X-Ray Roasting Telemetry Overlay */}
+            {isXRay && (
+              <div className="absolute top-12 left-4 z-20 p-3 bg-black/80 backdrop-blur-md border border-[#C99454]/40 text-[10px] font-mono-data text-[#DCD5C8] space-y-1 animate-in fade-in duration-300">
+                <div className="flex items-center space-x-1.5 text-[#C99454] font-bold uppercase">
+                  <Activity className="w-3 h-3 animate-pulse" />
+                  <span>X-Ray Bean Telemetry</span>
+                </div>
+                <div>Density: 0.69 g/ml (Specialty High-Grown)</div>
+                <div>Internal Moisture: 10.8% Calibrated</div>
+                <div>Chaff Separation: Clean Center-Cut</div>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom HUD: Official Packaging Sticker Colorway Selector & Interaction Hint */}
+          <div className="relative z-20 w-full space-y-3 pt-2 border-t border-white/10">
+            {bean.stickers.length > 1 && (
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[11px] font-mono-data text-[#8C8375] uppercase">
+                  Warna Label Kemasan:
+                </span>
+                <div className="flex space-x-1.5">
+                  {bean.stickers.map((stk, idx) => (
+                    <button
+                      key={stk.id}
+                      onClick={() => setSelectedStickerIdx(idx)}
+                      className={`text-[10px] px-2.5 py-1 font-mono-data border transition-all ${
+                        selectedStickerIdx === idx
+                          ? "bg-[#C99454] text-[#0E0D0C] font-bold border-[#C99454]"
+                          : "bg-black/50 text-[#DCD5C8] border-white/10 hover:border-white/30"
+                      }`}
+                    >
+                      {stk.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between text-[10px] font-mono-data text-[#8C8375]">
+              <span>Tahan &amp; geser mouse untuk memutar 360°</span>
+              <span>Scroll mouse untuk Zoom</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Roastery Monograph, Grind Profiling & Dual Checkout */}
+        <div className="flex-1 p-6 sm:p-8 lg:p-10 flex flex-col justify-between space-y-6 bg-[#11100E]">
+          <div className="space-y-6">
+            {/* Header / Category */}
+            <div className="space-y-2 border-b border-[#D8A86E]/15 pb-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-mono-data text-[#C99454] uppercase tracking-widest">
+                  [ SPECIMEN: {bean.category} ]
+                </span>
+                {bean.cuppingScore && (
+                  <span className="text-[11px] font-mono-data text-[#C99454] border-b border-[#C99454]">
+                    CUPPING: {bean.cuppingScore} PTS
+                  </span>
+                )}
+              </div>
+
+              <h3 className="text-3xl sm:text-4xl font-editorial font-bold text-[#F7F5F0]">
+                {bean.name}
+              </h3>
+              <p className="text-xs font-mono-data text-[#8C8375]">
+                {bean.origin} · {bean.elevation} · {bean.process}
+              </p>
+            </div>
+
+            {/* Sensory Descriptors */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono-data text-[#8C8375] uppercase tracking-widest block">
+                Profil &amp; Karakter Rasa
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {bean.tastingNotes.map((note, i) => (
+                  <span
+                    key={i}
+                    className="text-xs font-sans text-[#E6D9C8] bg-[#1C1A17] border border-white/10 px-3 py-1"
                   >
-                    {stk.name}
-                  </button>
+                    {note}
+                  </span>
                 ))}
               </div>
             </div>
-          )}
 
-          <p className="text-[11px] font-mono-data text-[#A69E90] mt-3">
-            Klik & drag mouse untuk memutar kemasan pouch 3D
-          </p>
-        </div>
-
-        {/* Right Column: Specifications, Customization & Hybrid Checkout */}
-        <div className="flex-1 p-6 sm:p-8 md:p-10 flex flex-col justify-between space-y-6">
-          <div className="space-y-4">
-            {/* Category & Origin */}
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase font-mono-data tracking-widest text-[#C99454] px-2.5 py-1 rounded-full bg-[#C99454]/10 border border-[#C99454]/20">
-                {bean.category}
-              </span>
-              <span className="text-xs font-mono-data text-[#DCD5C8]/60">{bean.elevation}</span>
-            </div>
-
-            {/* Title */}
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-editorial font-semibold text-white tracking-wide">
-                {bean.name}
-              </h2>
-              <p className="text-sm font-sans text-[#DCD5C8]/80 mt-1">{bean.subtitle}</p>
-            </div>
-
-            {/* Tasting Notes Chips */}
-            <div className="flex flex-wrap gap-2 pt-1">
-              {bean.tastingNotes.map((note, idx) => (
-                <span
-                  key={idx}
-                  className="text-xs font-sans px-3 py-1 rounded-lg bg-[#23211E] border border-white/5 text-[#E6DFD5]"
-                >
-                  {note}
-                </span>
-              ))}
-            </div>
-
-            {/* Description */}
-            <p className="text-sm font-sans text-[#B0A799] leading-relaxed pt-2">
-              {bean.description[language]}
-            </p>
-
-            {/* Terroir Specifications Table */}
-            <div className="grid grid-cols-2 gap-3 py-3 border-y border-white/10 text-xs font-mono-data">
-              <div>
-                <span className="text-[#8C8375] block">Terroir / Region:</span>
-                <span className="text-[#E6DFD5]">{bean.origin}</span>
-              </div>
-              <div>
-                <span className="text-[#8C8375] block">Process:</span>
-                <span className="text-[#E6DFD5]">{bean.process}</span>
-              </div>
-              <div>
-                <span className="text-[#8C8375] block">Varietal:</span>
-                <span className="text-[#E6DFD5]">{bean.varietal}</span>
-              </div>
-              <div>
-                <span className="text-[#8C8375] block">Cupping Score:</span>
-                <span className="text-[#C99454] font-bold">{bean.cuppingScore || "Specialty Grade"}</span>
-              </div>
-            </div>
-
-            {/* Weight Selector */}
+            {/* Weight Size Selector (Controls 3D Pouch Scale) */}
             <div className="space-y-2">
-              <label className="text-xs font-mono-data text-[#DCD5C8] uppercase tracking-wider block">
-                Pilih Ukuran Bag (Berat):
-              </label>
+              <div className="flex items-center justify-between text-[11px] font-mono-data">
+                <span className="text-[#8C8375] uppercase">Ukuran Berat Kemasan</span>
+                <span className="text-[#C99454] font-bold">Model 3D Otomatis Menyesuaikan</span>
+              </div>
               <div className="grid grid-cols-3 gap-2">
                 {(["200g", "500g", "1kg"] as WeightOption[]).map((w) => (
                   <button
                     key={w}
                     onClick={() => setSelectedWeight(w)}
-                    className={`py-2 px-3 rounded-xl border text-xs font-mono-data transition-all ${
+                    className={`py-2.5 text-xs font-mono-data border transition-all text-center ${
                       selectedWeight === w
-                        ? "border-[#C99454] bg-[#C99454]/15 text-[#F5F2EB] font-bold"
-                        : "border-white/10 bg-[#1A1916] text-[#A69E90] hover:border-white/20"
+                        ? "bg-[#C99454] text-[#0E0D0C] font-bold border-[#C99454] shadow-md"
+                        : "bg-[#161513] text-[#DCD5C8] border-white/10 hover:border-white/30"
                     }`}
                   >
-                    {w} — Rp {(bean.prices[w] / 1000).toLocaleString("id-ID")}k
+                    <div className="font-bold">{w}</div>
+                    <div className="text-[10px] opacity-80 mt-0.5">
+                      Rp {(bean.prices[w] / 1000).toLocaleString("id-ID")}k
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Grind Size Selector */}
+            {/* Grind Profile Selector with Micron HUD */}
             <div className="space-y-2">
-              <label className="text-xs font-mono-data text-[#DCD5C8] uppercase tracking-wider block">
-                Pilih Profil Gilingan:
-              </label>
+              <span className="text-[10px] font-mono-data text-[#8C8375] uppercase tracking-widest block">
+                Pilihan Profil Gilingan
+              </span>
               <div className="grid grid-cols-2 gap-2">
-                {[
-                  { id: "whole_bean", label: "Biji Utuh (Whole Bean)" },
-                  { id: "espresso", label: "Espresso (Fine)" },
-                  { id: "filter_v60", label: "Filter / V60 (Medium)" },
-                  { id: "french_press", label: "French Press (Coarse)" },
-                ].map((g) => (
+                {(["whole_bean", "filter_v60", "espresso", "french_press"] as GrindOption[]).map((g) => (
                   <button
-                    key={g.id}
-                    onClick={() => setSelectedGrind(g.id as GrindOption)}
-                    className={`py-2 px-3 rounded-xl border text-xs text-left transition-all ${
-                      selectedGrind === g.id
-                        ? "border-[#C99454] bg-[#C99454]/15 text-[#F5F2EB] font-medium"
-                        : "border-white/10 bg-[#1A1916] text-[#A69E90] hover:border-white/20"
+                    key={g}
+                    onClick={() => setSelectedGrind(g)}
+                    className={`p-2.5 text-left text-xs font-mono-data border transition-all ${
+                      selectedGrind === g
+                        ? "border-[#C99454] bg-[#1C1A17] text-white"
+                        : "border-white/10 hover:border-white/30 bg-[#141311] text-[#8C8375]"
                     }`}
                   >
-                    {g.label}
+                    <div className="font-bold text-[#E6D9C8]">{grindSpecs[g].label}</div>
+                    <div className="text-[10px] text-[#C99454] mt-0.5">{grindSpecs[g].microns}</div>
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Pricing & Hybrid Order Actions */}
-          <div className="pt-4 border-t border-white/10 space-y-3">
+          {/* Pricing & Checkout Action Buttons */}
+          <div className="space-y-4 pt-4 border-t border-[#D8A86E]/15">
             <div className="flex items-baseline justify-between">
-              <span className="text-xs font-mono-data text-[#8C8375]">Total Investasi:</span>
-              <span className="text-2xl font-editorial font-bold text-[#F5F2EB]">
-                Rp {currentPrice.toLocaleString("id-ID")}
+              <div>
+                <span className="text-[10px] font-mono-data text-[#8C8375] block uppercase">
+                  Total Investasi Rasa
+                </span>
+                <span className="text-3xl font-editorial font-bold text-[#F7F5F0]">
+                  Rp {(currentPrice / 1000).toLocaleString("id-ID")}.000
+                </span>
+              </div>
+
+              <span className="text-xs font-mono-data text-[#C99454]">
+                Freshly Roasted at Goalpara
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Modern Instant Cart Add */}
               <button
                 onClick={handleAddToCart}
                 disabled={isAddedSuccess}
-                className="w-full py-3.5 px-4 rounded-xl bg-[#C99454] hover:bg-[#D8A86E] text-[#0E0D0C] font-semibold text-xs tracking-wider uppercase font-mono-data flex items-center justify-center space-x-2 transition-all shadow-lg shadow-[#C99454]/25 active:scale-95"
+                className={`py-3.5 px-4 font-mono-data text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-lg ${
+                  isAddedSuccess
+                    ? "bg-emerald-600 text-white"
+                    : "bg-[#C99454] hover:bg-[#D8A86E] text-[#0E0D0C]"
+                }`}
               >
                 {isAddedSuccess ? (
                   <>
-                    <Check className="w-4 h-4 text-green-950" />
-                    <span>Tersimpan di Keranjang!</span>
+                    <Check className="w-4 h-4" />
+                    <span>Masuk ke Keranjang</span>
                   </>
                 ) : (
                   <>
                     <ShoppingBag className="w-4 h-4" />
-                    <span>Tambah ke Keranjang</span>
+                    <span>+ Tambah ke Cart</span>
                   </>
                 )}
               </button>
 
-              {/* Direct VIP Concierge Order (WhatsApp) */}
               <button
                 onClick={handleDirectConcierge}
-                className="w-full py-3.5 px-4 rounded-xl bg-[#23211E] hover:bg-[#2C2925] border border-[#D8A86E]/30 text-[#E6DFD5] font-semibold text-xs tracking-wider uppercase font-mono-data flex items-center justify-center space-x-2 transition-all active:scale-95"
+                className="py-3.5 px-4 bg-[#181614] hover:bg-[#221F1B] border border-[#D8A86E]/30 text-[#DCD5C8] hover:text-white font-mono-data text-xs uppercase tracking-wider flex items-center justify-center space-x-2 transition-all"
               >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>Order via Concierge</span>
+                <MessageCircle className="w-4 h-4 text-[#C99454]" />
+                <span>Pesan VIP WhatsApp</span>
               </button>
             </div>
           </div>
