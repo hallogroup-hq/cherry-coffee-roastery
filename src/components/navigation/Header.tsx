@@ -30,6 +30,7 @@ export default function Header() {
     { href: "/sanctuary", label: t.nav.sanctuary },
     { href: "/journal", label: t.nav.journal },
     { href: "/about", label: t.nav.about },
+    { href: "https://cherryedu.com", label: "CherryEdu", isExternal: true },
   ];
 
   return (
@@ -58,6 +59,20 @@ export default function Header() {
         <nav className="hidden lg:flex items-center space-x-7 text-xs font-mono-data uppercase tracking-widest">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
+            if (link.isExternal) {
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative py-1 text-[#C99454] hover:text-[#D8A86E] transition-colors flex items-center space-x-1"
+                >
+                  <span>{link.label}</span>
+                  <span className="text-[10px]">↗</span>
+                </a>
+              );
+            }
             return (
               <Link
                 key={link.href}
@@ -129,20 +144,37 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-[#141311] border-b border-[#D8A86E]/20 px-6 py-6 space-y-4 animate-in slide-in-from-top duration-300">
           <nav className="flex flex-col space-y-3 text-sm font-mono-data uppercase tracking-wider">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`py-2 px-3 rounded-lg ${
-                  pathname === link.href
-                    ? "bg-[#C99454]/15 text-[#C99454] font-bold"
-                    : "text-[#DCD5C8] hover:bg-white/5"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              if (link.isExternal) {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="py-2 px-3 rounded-lg text-[#C99454] hover:bg-white/5 flex items-center justify-between"
+                  >
+                    <span>{link.label}</span>
+                    <span className="text-xs">↗</span>
+                  </a>
+                );
+              }
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`py-2 px-3 rounded-lg ${
+                    pathname === link.href
+                      ? "bg-[#C99454]/15 text-[#C99454] font-bold"
+                      : "text-[#DCD5C8] hover:bg-white/5"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
           <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-[#A69E90] font-mono-data">
             <span>Goalpara Estate Camp, 1,250 MASL</span>

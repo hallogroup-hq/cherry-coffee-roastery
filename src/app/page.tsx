@@ -6,6 +6,7 @@ import EditorialManifesto from "@/components/atelier/EditorialManifesto";
 import BeansLedger from "@/components/atelier/BeansLedger";
 import MountainDispatch from "@/components/atelier/MountainDispatch";
 import RoasterLogbook from "@/components/atelier/RoasterLogbook";
+import CherryEduSection from "@/components/atelier/CherryEduSection";
 import Packaging3DModal from "@/components/3d/Packaging3DModal";
 import { BeanProduct } from "@/data/beans";
 
@@ -39,6 +40,9 @@ export default function HomePage() {
 
       {/* 5. THE ROASTERY FIELD LOGBOOK (Thermal Control & Drum Roasting Science) */}
       <RoasterLogbook />
+
+      {/* 6. CHERRYEDU ACADEMY (Coffee Education & Barista Academy Wing) */}
+      <CherryEduSection />
 
       {/* Interactive 3D Pouch Packaging Inspector Modal */}
       <Packaging3DModal

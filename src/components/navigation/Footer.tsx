@@ -68,6 +68,17 @@ export default function Footer() {
                   Tentang Roastery
                 </Link>
               </li>
+              <li>
+                <a
+                  href="https://cherryedu.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#C99454] hover:text-[#D8A86E] transition-colors flex items-center space-x-1"
+                >
+                  <span>CherryEdu (Akademi Kopi)</span>
+                  <span className="text-[10px]">↗</span>
+                </a>
+              </li>
             </ul>
           </div>
 
