@@ -30,7 +30,7 @@ export default function Header() {
     { href: "/sanctuary", label: t.nav.sanctuary },
     { href: "/journal", label: t.nav.journal },
     { href: "/about", label: t.nav.about },
-    { href: "https://cherryedu.com", label: "CherryEdu", isExternal: true },
+    { href: "https://edu.cherryroastery.com", label: "CherryEdu", isExternal: true },
   ];
 
   return (
