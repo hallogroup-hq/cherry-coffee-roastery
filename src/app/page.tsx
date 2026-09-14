@@ -7,7 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { beansData, BeanProduct } from "@/data/beans";
 import { journalArticles } from "@/data/journal";
-import CoffeeHeroCanvas from "@/components/3d/CoffeeHeroCanvas";
+import TactileLoupeHero from "@/components/atelier/TactileLoupeHero";
 import Packaging3DModal from "@/components/3d/Packaging3DModal";
 import RoastCurveGraph from "@/components/laboratory/RoastCurveGraph";
 import GoalparaLiveWidget from "@/components/sanctuary/GoalparaLiveWidget";
@@ -38,64 +38,8 @@ export default function HomePage() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      {/* 1. HERO SECTION: 3D INTERACTIVE CENTERPIECE & TYPOGRAPHIC STATEMENT */}
-      <section className="relative min-h-[90vh] lg:min-h-screen flex flex-col justify-between pt-10 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Background Subtle Terroir Light */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#C99454]/10 rounded-full blur-[140px] pointer-events-none -z-10" />
-
-        {/* Hero Top Title & Statement */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 pt-4 z-10">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#1C1A17] border border-[#D8A86E]/20 text-[#C99454] text-xs font-mono-data uppercase tracking-widest">
-            <Compass className="w-3.5 h-3.5" />
-            <span>{t.hero.badge}</span>
-          </div>
-
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-editorial font-normal tracking-tight text-[#F5F2EB] leading-[1.05]">
-            {t.hero.titleLine1} <br />
-            <span className="italic font-light text-[#C99454]">{t.hero.titleLine2}</span>
-          </h1>
-
-          <p className="text-base sm:text-lg font-sans text-[#B0A799] max-w-2xl mx-auto leading-relaxed pt-2">
-            {t.hero.subtitle}
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <Link
-              href="/beans"
-              className="px-6 py-3.5 rounded-full bg-[#C99454] hover:bg-[#D8A86E] text-[#0E0D0C] font-mono-data text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-xl shadow-[#C99454]/25 hover:scale-105 active:scale-95"
-            >
-              {t.hero.exploreOfferings}
-            </Link>
-            <Link
-              href="/laboratory"
-              className="px-6 py-3.5 rounded-full bg-[#1A1816] hover:bg-[#24211D] border border-white/10 text-[#DCD5C8] font-mono-data text-xs uppercase tracking-wider transition-all duration-300 hover:border-[#C99454]/40"
-            >
-              {t.hero.enterLaboratory}
-            </Link>
-          </div>
-        </div>
-
-        {/* 3D Interactive Canvas: Metamorphosis from Mountain Cherry to Roasted Bean */}
-        <div className="relative w-full my-6 flex-1 min-h-[460px] md:min-h-[560px]">
-          <CoffeeHeroCanvas />
-        </div>
-
-        {/* Hero Bottom Telemetry Details */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-white/10 text-xs font-mono-data text-[#8C8375] z-10">
-          <div>
-            <span className="text-[#C99454] block uppercase">Elevasi Perkebunan</span>
-            <span className="text-[#DCD5C8]">{t.hero.altitude}</span>
-          </div>
-          <div className="sm:text-center">
-            <span className="text-[#C99454] block uppercase">Terroir Slow Bar</span>
-            <span className="text-[#DCD5C8]">{t.hero.coordinates}</span>
-          </div>
-          <div className="sm:text-right">
-            <span className="text-[#C99454] block uppercase">Ritual Seduh</span>
-            <span className="text-[#DCD5C8]">Setiap Akhir Pekan (Sabtu - Minggu)</span>
-          </div>
-        </div>
-      </section>
+      {/* 1. FLAGSHIP ATELIER HERO: TACTILE MACRO LOUPE & TERROIR STAGES */}
+      <TactileLoupeHero />
 
       {/* 2. THE SOULFUL MANIFESTO: CONTEMPLATIVE SLOW LIVING (@CHERRYBAR.ID) */}
       <section className="relative bg-[#12110F] border-y border-[#D8A86E]/15 py-24 px-4 sm:px-6 lg:px-8">
