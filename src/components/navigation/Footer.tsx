@@ -70,7 +70,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://edu.cherryroastery.com"
+                  href="https://edu.cherrycoffeeroastery.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#C99454] hover:text-[#D8A86E] transition-colors flex items-center space-x-1"

@@ -54,7 +54,7 @@ export default function CherryEduSection() {
         </div>
 
         <a
-          href="https://edu.cherryroastery.com"
+          href="https://edu.cherrycoffeeroastery.com"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center space-x-2 px-6 py-3.5 bg-[#C99454] hover:bg-[#D8A86E] text-[#0E0D0C] font-mono-data text-xs font-bold uppercase tracking-wider transition-all shadow-lg group"
@@ -110,7 +110,7 @@ export default function CherryEduSection() {
         </div>
 
         <a
-          href="https://edu.cherryroastery.com"
+          href="https://edu.cherrycoffeeroastery.com"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs font-mono-data text-[#C99454] hover:text-white uppercase tracking-wider flex items-center space-x-1.5 transition-colors self-start sm:self-center"
