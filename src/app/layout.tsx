@@ -48,7 +48,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className="scroll-smooth">
-      <body className="bg-[#0E0D0C] text-[#F5F2EB] font-sans antialiased min-h-screen flex flex-col selection:bg-[#C99454] selection:text-[#0E0D0C]">
+      <body className="bg-[#F7F4EE] text-[#181715] font-sans antialiased min-h-screen flex flex-col selection:bg-[#BFA15F] selection:text-[#FFFFFF]">
         <LanguageProvider>
           <CartProvider>
             {/* Architectural Floating Navigation */}

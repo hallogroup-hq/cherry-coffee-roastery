@@ -1,20 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 @import "tailwindcss";
 
 :root {
-  --terroir-sand: #F7F5F0;
-  --terroir-sand-muted: #EBE6DC;
-  --terroir-stone: #DCD5C8;
-  --terroir-charcoal: #161513;
-  --terroir-obsidian: #0D0C0B;
-  --terroir-pine: #232B25;
-  --terroir-pine-mist: #333F36;
-  --terroir-amber: #C99454;
-  --terroir-copper: #D8A86E;
-  --terroir-cream: #FAFAF8;
+  /* 19th-Century Apothecary & Botanical Parchment Tokens */
+  --parchment-base: #F7F4EE;
+  --parchment-subtle: #FAF8F5;
+  --parchment-card: #FFFFFF;
+  --parchment-border: rgba(74, 67, 59, 0.16);
+  --parchment-hairline: rgba(74, 67, 59, 0.08);
 
-  --background: #0E0D0C;
-  --foreground: #F5F2EB;
+  /* Iron Gall Ink & Sepia */
+  --ink-primary: #181715;
+  --ink-secondary: #4A433B;
+  --ink-muted: #7A7268;
+  --ink-faint: #A39B90;
+
+  /* Antique Brass Hardware (Opsi 2 Fusion) */
+  --brass-gold: #BFA15F;
+  --brass-dark: #8C6E2E;
+  --brass-burnished: #5E491E;
+
+  /* Imperial Burgundy Wax Seal & Cherry */
+  --wax-burgundy: #721C24;
+  --wax-seal-glow: rgba(114, 28, 36, 0.25);
+
+  /* Mount Gede Botanical Pine */
+  --botanical-pine: #243329;
+  --botanical-sage: #4E6355;
+
+  --background: #F7F4EE;
+  --foreground: #181715;
 
   --font-editorial: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -26,34 +41,34 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
-  selection-background-color: var(--terroir-amber);
-  selection-color: #0E0D0C;
+  selection-background-color: var(--brass-gold);
+  selection-color: #FFFFFF;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background-color: #C99454;
-  color: #0D0C0B;
+  background-color: #BFA15F;
+  color: #FFFFFF;
 }
 
-/* Custom Scrollbar */
+/* Antique Parchment Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0E0D0C;
+  background: #F2EFE8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2D2B28;
+  background: #D5CEC2;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C99454;
+  background: #BFA15F;
 }
 
 /* Typography Utility Classes */
@@ -65,45 +80,20 @@ body {
   font-family: var(--font-mono);
 }
 
-/* Subtle Film Grain Texture Overlay */
-.bg-grain {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
-  background-size: 24px 24px;
+/* Parchment Fine Etched Line Texture Overlay */
+.bg-parchment {
+  background-color: #F7F4EE;
+  background-image: radial-gradient(rgba(74, 67, 59, 0.05) 1px, transparent 0);
+  background-size: 20px 20px;
 }
 
-/* Warm Terroir Glassmorphism */
-.glass-terroir {
-  background: rgba(22, 21, 19, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(216, 168, 110, 0.12);
+/* Antique Engraved Double Border */
+.border-antique-double {
+  border: 3px double rgba(74, 67, 59, 0.22);
 }
 
-.glass-terroir-light {
-  background: rgba(247, 245, 240, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(220, 213, 200, 0.6);
-}
-
-/* Subtle Mountain Mist Keyframe Animation */
-@keyframes drift {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translateY(-20px) scale(1.08);
-    opacity: 0.35;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.2;
-  }
-}
-
-.animate-mist-drift {
-  animation: drift 18s ease-in-out infinite;
+.border-antique-single {
+  border: 1px solid rgba(74, 67, 59, 0.14);
 }
 
 /* Hide scrollbar for clean carousels */

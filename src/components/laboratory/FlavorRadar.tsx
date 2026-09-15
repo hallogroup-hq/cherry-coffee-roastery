@@ -43,27 +43,31 @@ export default function FlavorRadar() {
     .join(" ");
 
   return (
-    <div className="w-full bg-[#12110F] border border-[#D8A86E]/20 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+    <div className="w-full bg-[#FAF8F5] border-2 border-[#D5CEC2] shadow-[0_12px_40px_rgba(74,67,59,0.08)] p-6 sm:p-8 space-y-6 relative overflow-hidden rounded-xs">
+      {/* Fine Margin Etching Border */}
+      <div className="absolute inset-1.5 border border-[#E5DFD3] pointer-events-none" />
+
+      {/* Header & Bean Selector */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E5DFD3] pb-5 relative z-10">
         <div>
-          <span className="text-xs font-mono-data text-[#C99454] uppercase tracking-widest block">
-            Cupping Sensory Radar
+          <span className="text-xs font-mono tracking-widest text-[#721C24] uppercase font-bold block">
+            FIG. 07 — ASTROLABE SENSORIEL DU TERROIR
           </span>
-          <h3 className="text-2xl font-editorial font-bold text-white mt-1">
-            Visualisasi Spektrum Rasa
+          <h3 className="text-2xl font-editorial font-bold text-[#181715] mt-1">
+            Visualisasi Spektrum Rasa &amp; Cupping
           </h3>
         </div>
 
-        {/* Bean Switcher */}
-        <div className="flex flex-wrap gap-2">
+        {/* Bean Switcher: Pressed Paper Folio Tabs */}
+        <div className="flex flex-wrap gap-1.5">
           {beansData.map((b) => (
             <button
               key={b.id}
               onClick={() => setSelectedBeanId(b.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-mono-data transition-all ${
+              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition-all border ${
                 selectedBeanId === b.id
-                  ? "bg-[#C99454] text-[#0E0D0C] font-bold"
-                  : "bg-[#1C1A17] text-[#DCD5C8]/80 hover:bg-white/10"
+                  ? "bg-[#721C24] text-white border-[#56151B] font-bold shadow-xs"
+                  : "bg-[#F2EFE8] text-[#5A534B] border-[#D5CEC2] hover:border-[#721C24]"
               }`}
             >
               {b.name}
@@ -72,11 +76,12 @@ export default function FlavorRadar() {
         </div>
       </div>
 
-      {/* Radar SVG Diagram */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-        <div className="relative w-72 sm:w-80 h-72 sm:h-80 select-none">
+      {/* Radar SVG Diagram & Scoreboard */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 relative z-10">
+        {/* Astrolabe SVG */}
+        <div className="relative w-72 sm:w-80 h-72 sm:h-80 select-none bg-[#F7F4EE] border border-[#E2DDD2] p-2 flex items-center justify-center">
           <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full">
-            {/* Concentric grid webs */}
+            {/* Concentric grid webs: Astrolabe rings */}
             {[2, 4, 6, 8, 10].map((level) => {
               const gridPoints = attributes
                 .map((_, i) => {
@@ -89,8 +94,9 @@ export default function FlavorRadar() {
                   key={level}
                   points={gridPoints}
                   fill="none"
-                  stroke="rgba(255,255,255,0.07)"
-                  strokeWidth="1"
+                  stroke="#D5CEC2"
+                  strokeWidth="0.75"
+                  strokeDasharray={level === 10 ? "none" : "2 2"}
                 />
               );
             })}
@@ -105,22 +111,22 @@ export default function FlavorRadar() {
                   y1={center}
                   x2={x}
                   y2={y}
-                  stroke="rgba(255,255,255,0.1)"
-                  strokeWidth="1"
+                  stroke="#C5BCAB"
+                  strokeWidth="0.75"
                 />
               );
             })}
 
-            {/* Active Sensory Polygon with Gradient */}
+            {/* Active Sensory Polygon with Burgundy Fill */}
             <polygon
               points={points}
-              fill="url(#radarGradient)"
-              stroke="#C99454"
-              strokeWidth="2.5"
+              fill="rgba(114, 28, 36, 0.16)"
+              stroke="#721C24"
+              strokeWidth="2"
               className="transition-all duration-500 ease-out"
             />
 
-            {/* Active Dots */}
+            {/* Active Attribute Points */}
             {attributes.map((attr, i) => {
               const val = currentBean.sensoryScores[attr.key as keyof typeof currentBean.sensoryScores] || 5;
               const { x, y } = getCoordinates(val, i);
@@ -130,9 +136,9 @@ export default function FlavorRadar() {
                   cx={x}
                   cy={y}
                   r="4"
-                  fill="#F5F2EB"
-                  stroke="#C99454"
-                  strokeWidth="2"
+                  fill="#721C24"
+                  stroke="#FAF8F5"
+                  strokeWidth="1.5"
                 />
               );
             })}
@@ -145,40 +151,34 @@ export default function FlavorRadar() {
                   key={i}
                   x={x}
                   y={y}
-                  fill="#DCD5C8"
-                  fontSize="10"
-                  fontFamily="Space Mono"
+                  fill="#181715"
+                  fontSize="9.5"
+                  fontFamily="Space Mono, monospace"
                   textAnchor="middle"
                   alignmentBaseline="middle"
+                  fontWeight="bold"
                 >
                   {attr.label}
                 </text>
               );
             })}
-
-            <defs>
-              <radialGradient id="radarGradient">
-                <stop offset="0%" stopColor="#C99454" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#931a25" stopOpacity="0.2" />
-              </radialGradient>
-            </defs>
           </svg>
         </div>
 
-        {/* Sensory Scoreboard */}
-        <div className="flex-1 w-full max-w-sm space-y-4">
-          <div className="border-b border-white/10 pb-3">
-            <span className="text-xs font-mono-data text-[#C99454] uppercase">
-              {currentBean.category} · {currentBean.process}
+        {/* Sensory Scoreboard: Antique Brass Inset Folio */}
+        <div className="flex-1 w-full max-w-sm space-y-4 bg-[#F2ECE0] border border-[#C5BCAB] p-5 shadow-xs">
+          <div className="border-b border-[#D5CEC2] pb-3">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#721C24] font-bold">
+              {currentBean.category.toUpperCase()} · {currentBean.process.toUpperCase()}
             </span>
-            <h4 className="text-xl font-editorial font-bold text-white">
+            <h4 className="text-xl font-editorial font-bold text-[#181715] mt-0.5">
               {currentBean.name}
             </h4>
-            <div className="flex flex-wrap gap-1.5 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-2.5">
               {currentBean.tastingNotes.map((note, idx) => (
                 <span
                   key={idx}
-                  className="text-xs px-2.5 py-0.5 rounded-full bg-[#1C1A17] border border-white/5 text-[#E6DFD5]"
+                  className="text-[11px] px-2.5 py-0.5 bg-[#FAF8F5] border border-[#D5CEC2] text-[#4A433B] font-sans"
                 >
                   {note}
                 </span>
@@ -186,21 +186,21 @@ export default function FlavorRadar() {
             </div>
           </div>
 
-          <div className="space-y-2 text-xs font-mono-data">
+          <div className="space-y-2.5 text-xs font-mono">
             {attributes.map((attr) => {
               const val =
                 currentBean.sensoryScores[attr.key as keyof typeof currentBean.sensoryScores] || 0;
               return (
                 <div key={attr.key} className="flex items-center justify-between">
-                  <span className="text-[#8C8375]">{attr.label}</span>
+                  <span className="text-[#5A534B]">{attr.label}</span>
                   <div className="flex items-center space-x-2">
-                    <div className="w-28 h-1.5 bg-[#1C1A17] rounded-full overflow-hidden">
+                    <div className="w-28 h-1.5 bg-[#E2DDD2] overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-[#C99454] to-[#E6DFD5] rounded-full transition-all duration-500"
+                        className="h-full bg-[#721C24] transition-all duration-500"
                         style={{ width: `${val * 10}%` }}
                       />
                     </div>
-                    <span className="text-white font-bold w-6 text-right">
+                    <span className="text-[#181715] font-bold w-6 text-right font-mono">
                       {val.toFixed(1)}
                     </span>
                   </div>

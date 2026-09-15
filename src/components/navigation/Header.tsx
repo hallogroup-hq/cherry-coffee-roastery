@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
-import { ShoppingBag, Menu, X, Compass, Sparkles } from "lucide-react";
+import { ShoppingBag, Menu, X } from "lucide-react";
 
 export default function Header() {
   const pathname = usePathname();
@@ -25,38 +25,42 @@ export default function Header() {
 
   const navLinks = [
     { href: "/", label: t.nav.home },
-    { href: "/beans", label: t.nav.beans },
-    { href: "/laboratory", label: t.nav.laboratory },
-    { href: "/sanctuary", label: t.nav.sanctuary },
-    { href: "/journal", label: t.nav.journal },
+    { href: "/beans", label: "Specimen Ledger" },
+    { href: "/laboratory", label: "Extraction Lab" },
+    { href: "/sanctuary", label: "Sanctuary" },
+    { href: "/journal", label: "Archival Journal" },
     { href: "/about", label: t.nav.about },
     { href: "https://edu.cherrycoffeeroastery.com", label: "CherryEdu", isExternal: true },
   ];
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#0E0D0C]/85 backdrop-blur-md border-b border-[#D8A86E]/15 py-3.5 shadow-2xl"
-          : "bg-gradient-to-b from-[#0E0D0C]/80 via-[#0E0D0C]/40 to-transparent py-5"
+          ? "bg-[#F7F4EE]/95 backdrop-blur-md border-b border-[rgba(74,67,59,0.16)] py-3 shadow-xs"
+          : "bg-[#F7F4EE]/80 backdrop-blur-xs border-b border-[rgba(74,67,59,0.08)] py-4"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Logo */}
+        {/* Brand Logo & Wax Seal Emblem */}
         <Link href="/" className="relative flex items-center space-x-3 group">
-          <div className="relative w-44 sm:w-52 h-10 transition-transform duration-300 group-hover:scale-105">
+          <div className="relative w-40 sm:w-48 h-9 transition-transform duration-300 group-hover:scale-[1.02]">
             <Image
-              src="/assets/branding/Logo Variation CCR-02.png"
+              src="/assets/branding/Logo Variation CCR-01.png"
               alt="Cherry Coffee Roastery"
               fill
-              className="object-contain object-left filter brightness-110"
+              className="object-contain object-left"
               priority
             />
           </div>
+          {/* Subtle Wax Seal Monogram Badge */}
+          <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-[#721C24]/10 border border-[#721C24]/20 text-[9px] font-mono uppercase tracking-widest text-[#721C24] font-medium">
+            Est. MMXXIV
+          </span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center space-x-7 text-xs font-mono-data uppercase tracking-widest">
+        <nav className="hidden lg:flex items-center space-x-7 text-xs font-mono tracking-widest uppercase text-[#5A534B]">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             if (link.isExternal) {
@@ -66,7 +70,7 @@ export default function Header() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative py-1 text-[#C99454] hover:text-[#D8A86E] transition-colors flex items-center space-x-1"
+                  className="relative py-1 text-[#8C6E2E] hover:text-[#5E491E] transition-colors flex items-center space-x-1"
                 >
                   <span>{link.label}</span>
                   <span className="text-[10px]">↗</span>
@@ -78,12 +82,14 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={`relative py-1 transition-colors duration-200 ${
-                  isActive ? "text-[#C99454] font-bold" : "text-[#DCD5C8]/80 hover:text-white"
+                  isActive
+                    ? "text-[#721C24] font-bold"
+                    : "hover:text-[#181715]"
                 }`}
               >
                 {link.label}
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#C99454] rounded-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#721C24] rounded-full" />
                 )}
               </Link>
             );
@@ -93,38 +99,38 @@ export default function Header() {
         {/* Action Controls: Language Switcher & Cart */}
         <div className="flex items-center space-x-3 sm:space-x-4">
           {/* Language Switcher Pill */}
-          <div className="flex items-center bg-[#1C1A17] border border-white/10 rounded-full p-0.5 text-[11px] font-mono-data">
+          <div className="flex items-center bg-[#EFECE4] border border-[rgba(74,67,59,0.18)] rounded-full p-0.5 text-[11px] font-mono">
             <button
               onClick={() => setLanguage("id")}
-              className={`px-2.5 py-1 rounded-full transition-all ${
+              className={`px-2.5 py-0.5 rounded-full transition-all ${
                 language === "id"
-                  ? "bg-[#C99454] text-[#0E0D0C] font-bold"
-                  : "text-[#A69E90] hover:text-white"
+                  ? "bg-[#721C24] text-white shadow-xs font-bold"
+                  : "text-[#5A534B] hover:text-[#181715]"
               }`}
             >
               ID
             </button>
             <button
               onClick={() => setLanguage("en")}
-              className={`px-2.5 py-1 rounded-full transition-all ${
+              className={`px-2.5 py-0.5 rounded-full transition-all ${
                 language === "en"
-                  ? "bg-[#C99454] text-[#0E0D0C] font-bold"
-                  : "text-[#A69E90] hover:text-white"
+                  ? "bg-[#721C24] text-white shadow-xs font-bold"
+                  : "text-[#5A534B] hover:text-[#181715]"
               }`}
             >
               EN
             </button>
           </div>
 
-          {/* Cart Trigger */}
+          {/* Cart Icon Button with Wax Seal Red Badge */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="relative p-2.5 rounded-full bg-[#1C1A17] border border-white/10 hover:border-[#C99454]/40 text-[#E6DFD5] transition-all hover:scale-105 active:scale-95"
+            className="relative p-2 rounded-full border border-[rgba(74,67,59,0.18)] hover:border-[#721C24] bg-[#FAF8F5] text-[#181715] hover:text-[#721C24] transition-colors flex items-center justify-center shadow-xs"
             aria-label="Open Cart"
           >
-            <ShoppingBag className="w-4 h-4 text-[#DCD5C8]" />
+            <ShoppingBag className="w-4 h-4" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#C99454] text-[#0E0D0C] font-mono-data text-[10px] font-bold flex items-center justify-center shadow-lg">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#721C24] text-white text-[9px] font-mono font-bold rounded-full flex items-center justify-center shadow-xs">
                 {totalItems}
               </span>
             )}
@@ -133,53 +139,31 @@ export default function Header() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-full bg-[#1C1A17] border border-white/10 text-[#DCD5C8]"
+            className="lg:hidden p-2 text-[#181715] hover:text-[#721C24] transition-colors"
+            aria-label="Toggle Menu"
           >
-            {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#141311] border-b border-[#D8A86E]/20 px-6 py-6 space-y-4 animate-in slide-in-from-top duration-300">
-          <nav className="flex flex-col space-y-3 text-sm font-mono-data uppercase tracking-wider">
-            {navLinks.map((link) => {
-              if (link.isExternal) {
-                return (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="py-2 px-3 rounded-lg text-[#C99454] hover:bg-white/5 flex items-center justify-between"
-                  >
-                    <span>{link.label}</span>
-                    <span className="text-xs">↗</span>
-                  </a>
-                );
-              }
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`py-2 px-3 rounded-lg ${
-                    pathname === link.href
-                      ? "bg-[#C99454]/15 text-[#C99454] font-bold"
-                      : "text-[#DCD5C8] hover:bg-white/5"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+        <div className="lg:hidden bg-[#F7F4EE] border-b border-[rgba(74,67,59,0.18)] px-6 py-6 space-y-4 shadow-xl">
+          <nav className="flex flex-col space-y-3 font-mono text-xs uppercase tracking-widest text-[#5A534B]">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`py-2 border-b border-[rgba(74,67,59,0.08)] ${
+                  pathname === link.href ? "text-[#721C24] font-bold" : "hover:text-[#181715]"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
-          <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-[#A69E90] font-mono-data">
-            <span>Goalpara Estate Camp, 1,250 MASL</span>
-            <span className="text-[#C99454]">@cherrycoffeeroastery</span>
-          </div>
         </div>
       )}
     </header>

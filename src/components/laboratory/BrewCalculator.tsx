@@ -46,21 +46,24 @@ export default function BrewCalculator() {
   };
 
   return (
-    <div className="w-full bg-[#12110F] border border-[#D8A86E]/20 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
+    <div className="w-full bg-[#FAF8F5] border-2 border-[#D5CEC2] shadow-[0_12px_40px_rgba(74,67,59,0.08)] p-6 sm:p-8 space-y-6 relative overflow-hidden rounded-xs">
+      {/* Fine Margin Etching Border */}
+      <div className="absolute inset-1.5 border border-[#E5DFD3] pointer-events-none" />
+
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E5DFD3] pb-5 relative z-10">
         <div>
-          <div className="flex items-center space-x-2 text-xs font-mono-data text-[#C99454] uppercase tracking-widest">
+          <div className="flex items-center space-x-2 text-xs font-mono tracking-widest text-[#721C24] uppercase font-bold">
             <Sliders className="w-3.5 h-3.5" />
-            <span>Slow Bar Extraction Matrix & Flow Telemetry</span>
+            <span>FIG. 08 — MATRICE D&apos;EXTRACTION SLOW BAR</span>
           </div>
-          <h3 className="text-2xl font-editorial font-bold text-white mt-1">
-            Kalkulator Ekstraksi Manual Brew
+          <h3 className="text-2xl font-editorial font-bold text-[#181715] mt-1">
+            Kalkulator Rasio &amp; Sains Seduh
           </h3>
         </div>
 
-        {/* Method Picker Tabs */}
-        <div className="flex flex-wrap gap-2">
+        {/* Method Picker Tabs: Pressed Paper Folio Tags */}
+        <div className="flex flex-wrap gap-1.5">
           {brewRecipes.map((recipe) => (
             <button
               key={recipe.id}
@@ -69,10 +72,10 @@ export default function BrewCalculator() {
                 setCustomDose(recipe.coffeeDoseG);
                 resetTimer();
               }}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-mono-data transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-all border ${
                 selectedRecipeId === recipe.id
-                  ? "bg-[#C99454] text-[#0E0D0C] font-bold shadow-md shadow-[#C99454]/25"
-                  : "bg-[#1C1A17] text-[#DCD5C8]/80 hover:bg-white/10"
+                  ? "bg-[#721C24] text-white border-[#56151B] font-bold shadow-xs"
+                  : "bg-[#F2EFE8] text-[#5A534B] border-[#D5CEC2] hover:border-[#721C24]"
               }`}
             >
               {recipe.method}
@@ -81,14 +84,14 @@ export default function BrewCalculator() {
         </div>
       </div>
 
-      {/* Grid: Brew Parameters & Live Pour Timer */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Grid: Parameters & Chronometer */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
         {/* Col 1 & 2: Dynamic Parameters & Pour Steps */}
         <div className="lg:col-span-2 space-y-5">
-          {/* Dose & Ratio Adjuster */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#1A1816] p-4 rounded-2xl border border-white/5">
+          {/* Dose & Ratio Adjuster: Antique Brass Inset Tiles */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F2ECE0] p-4 border border-[#C5BCAB] shadow-xs">
             <div>
-              <span className="text-[10px] uppercase font-mono-data text-[#8C8375] block">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-[#7A7268] block">
                 Dosis Kopi (g)
               </span>
               <div className="flex items-center space-x-2 mt-1">
@@ -98,36 +101,36 @@ export default function BrewCalculator() {
                   max={60}
                   value={customDose}
                   onChange={(e) => setCustomDose(Math.max(1, Number(e.target.value)))}
-                  className="w-16 bg-[#12110F] border border-white/10 rounded-lg px-2 py-1 text-sm font-mono-data text-[#C99454] font-bold text-center focus:outline-none"
+                  className="w-16 bg-[#FAF8F5] border border-[#C5BCAB] px-2 py-1 text-sm font-mono text-[#181715] font-bold text-center focus:outline-none focus:border-[#721C24]"
                 />
-                <span className="text-xs font-mono-data text-[#DCD5C8]">gram</span>
+                <span className="text-xs font-mono text-[#7A7268]">gram</span>
               </div>
             </div>
 
             <div>
-              <span className="text-[10px] uppercase font-mono-data text-[#8C8375] block">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-[#7A7268] block">
                 Target Air (Yield)
               </span>
-              <span className="text-base font-mono-data font-bold text-white block mt-1">
+              <span className="text-base font-mono font-bold text-[#181715] block mt-1">
                 {calculatedYield} ml
               </span>
             </div>
 
             <div>
-              <span className="text-[10px] uppercase font-mono-data text-[#8C8375] block">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-[#7A7268] block">
                 Suhu Air Optimal
               </span>
-              <span className="text-base font-mono-data font-bold text-amber-300 block mt-1 flex items-center">
-                <Thermometer className="w-3.5 h-3.5 mr-1 text-amber-400" />
+              <span className="text-base font-mono font-bold text-[#8C6E2E] block mt-1 flex items-center">
+                <Thermometer className="w-3.5 h-3.5 mr-1 text-[#8C6E2E]" />
                 {activeRecipe.waterTempC}°C
               </span>
             </div>
 
             <div>
-              <span className="text-[10px] uppercase font-mono-data text-[#8C8375] block">
+              <span className="text-[9px] uppercase font-mono tracking-wider text-[#7A7268] block">
                 Target TDS
               </span>
-              <span className="text-base font-mono-data font-bold text-emerald-400 block mt-1">
+              <span className="text-base font-mono font-bold text-[#721C24] block mt-1">
                 {activeRecipe.targetTds}
               </span>
             </div>
@@ -135,8 +138,8 @@ export default function BrewCalculator() {
 
           {/* Stepped Pouring Timeline */}
           <div className="space-y-3">
-            <h4 className="text-xs uppercase font-mono-data tracking-wider text-[#A69E90]">
-              Jadwal Penuangan (Pour Intervals)
+            <h4 className="text-xs uppercase font-mono tracking-wider text-[#7A7268] font-bold">
+              JADWAL PENUANGAN (POUR INTERVALS)
             </h4>
 
             <div className="space-y-2">
@@ -148,32 +151,32 @@ export default function BrewCalculator() {
                 return (
                   <div
                     key={idx}
-                    className={`p-3.5 rounded-xl border transition-all flex items-start space-x-3 ${
+                    className={`p-3.5 border transition-all flex items-start space-x-3 ${
                       isPassed
-                        ? "bg-[#162017] border-emerald-500/30 text-emerald-200"
-                        : "bg-[#181614] border-white/5 text-[#DCD5C8]"
+                        ? "bg-[#F2ECE0] border-[#8C6E2E] text-[#181715] shadow-xs"
+                        : "bg-[#FAF8F5] border-[#E5DFD3] text-[#5A534B]"
                     }`}
                   >
                     <div className="pt-0.5">
                       {isPassed ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <CheckCircle2 className="w-4 h-4 text-[#721C24]" />
                       ) : (
-                        <div className="w-4 h-4 rounded-full border border-[#8C8375] flex items-center justify-center text-[9px] font-mono-data text-[#8C8375]">
+                        <div className="w-4 h-4 rounded-full border border-[#C5BCAB] flex items-center justify-center text-[9px] font-mono text-[#7A7268]">
                           {idx + 1}
                         </div>
                       )}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between text-xs font-mono-data mb-0.5">
-                        <span className="font-bold text-[#F5F2EB]">
+                      <div className="flex items-center justify-between text-xs font-mono mb-0.5">
+                        <span className="font-bold text-[#181715]">
                           Detik {step.timeSec}s — Target: {scaledPour}g air
                         </span>
-                        <span className="text-[11px] text-[#A69E90]">
+                        <span className="text-[11px] text-[#7A7268]">
                           {Math.floor(step.timeSec / 60)}m {step.timeSec % 60}s
                         </span>
                       </div>
-                      <p className="text-xs font-sans text-[#A69E90] leading-relaxed">
+                      <p className="text-xs font-sans text-[#5A534B] leading-relaxed">
                         {step.instruction[language]}
                       </p>
                     </div>
@@ -184,22 +187,22 @@ export default function BrewCalculator() {
           </div>
         </div>
 
-        {/* Col 3: Live Extraction Timer & Tasting Notes */}
-        <div className="bg-[#1A1816] border border-white/5 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        {/* Col 3: Horological Chronometer Console */}
+        <div className="bg-[#F2ECE0] border border-[#C5BCAB] p-6 flex flex-col justify-between space-y-6 shadow-xs">
           <div className="space-y-3 text-center">
-            <span className="text-[11px] font-mono-data text-[#8C8375] uppercase tracking-widest block">
-              Stopwatch Ekstraksi
+            <span className="text-[10px] font-mono text-[#7A7268] uppercase tracking-widest block font-bold">
+              CHRONOMÈTRE D&apos;EXTRACTION
             </span>
-            <div className="text-5xl font-mono-data font-bold text-white tracking-widest py-2">
+            <div className="text-5xl font-mono font-bold text-[#181715] tracking-widest py-2 bg-[#FAF8F5] border border-[#D5CEC2] shadow-inner">
               {formatTime(timerSeconds)}
             </div>
-            <div className="flex justify-center space-x-3">
+            <div className="flex justify-center space-x-3 pt-2">
               <button
                 onClick={() => setTimerRunning(!timerRunning)}
-                className={`px-4 py-2 rounded-xl text-xs font-mono-data font-bold flex items-center space-x-2 transition-all ${
+                className={`px-5 py-2 text-xs font-mono font-bold uppercase tracking-wider flex items-center space-x-2 transition-all shadow-xs ${
                   timerRunning
-                    ? "bg-amber-500 text-black shadow-lg shadow-amber-500/30"
-                    : "bg-[#C99454] text-[#0E0D0C] shadow-lg shadow-[#C99454]/30"
+                    ? "bg-[#8C6E2E] text-white"
+                    : "bg-[#721C24] hover:bg-[#8B2635] text-white"
                 }`}
               >
                 {timerRunning ? (
@@ -216,22 +219,22 @@ export default function BrewCalculator() {
               </button>
               <button
                 onClick={resetTimer}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#DCD5C8] border border-white/10 transition-colors"
-                title="Reset Timer"
+                className="p-2 bg-[#FAF8F5] hover:bg-[#E5DFD3] text-[#181715] border border-[#C5BCAB] transition-colors"
+                title="Reset Chronometer"
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-white/10 space-y-3">
-            <h5 className="text-xs font-mono-data text-[#C99454] uppercase tracking-wider">
+          <div className="pt-4 border-t border-[#D5CEC2] space-y-3">
+            <h5 className="text-xs font-mono text-[#721C24] uppercase tracking-wider font-bold">
               Karakter Cangkir
             </h5>
-            <p className="text-xs font-sans text-[#DCD5C8] leading-relaxed italic">
+            <p className="text-xs font-sans text-[#4A433B] leading-relaxed italic">
               &ldquo;{activeRecipe.tastingCharacter[language]}&rdquo;
             </p>
-            <div className="pt-2 text-[11px] font-mono-data text-[#8C8375] space-y-1">
+            <div className="pt-2 text-[11px] font-mono text-[#7A7268] space-y-1">
               <p>Device: {activeRecipe.device}</p>
               <p>Grind: {activeRecipe.grindDescription} (~{activeRecipe.grindMicrons}µm)</p>
             </div>

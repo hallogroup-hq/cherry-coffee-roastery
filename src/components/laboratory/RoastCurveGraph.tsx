@@ -44,45 +44,54 @@ export default function RoastCurveGraph() {
     .join(" ");
 
   const phaseNames: Record<string, { label: string; desc: string; color: string }> = {
-    charge: { label: "Charge In", desc: "Green beans enter pre-heated drum", color: "#C99454" },
-    drying: { label: "Drying Phase", desc: "Moisture evaporation & green-to-pale yellow shift", color: "#84cc16" },
-    maillard: { label: "Maillard Reaction", desc: "Caramelization, melanoidins & aroma development", color: "#f59e0b" },
-    first_crack: { label: "First Crack", desc: "Cell walls pop; origin acidity & florality unlocked", color: "#ef4444" },
-    development: { label: "Roast Development", desc: "Calibrated sweetness & tactile viscosity", color: "#b45309" },
-    drop: { label: "Drop & Quench", desc: "Rapid cooling on perforated tray", color: "#06b6d4" },
+    charge: { label: "Charge In", desc: "Green beans enter pre-heated cast-iron drum", color: "#8C6E2E" },
+    drying: { label: "Drying Phase", desc: "Moisture evaporation & green-to-pale straw shift", color: "#BFA15F" },
+    maillard: { label: "Maillard Reaction", desc: "Caramelization, melanoidins & aroma development", color: "#A85D26" },
+    first_crack: { label: "First Crack", desc: "Cell walls fracture; origin acidity & florality unlocked", color: "#721C24" },
+    development: { label: "Roast Development", desc: "Calibrated sweetness & tactile viscosity", color: "#5E491E" },
+    drop: { label: "Drop & Quench", desc: "Rapid cooling on perforated brass tray", color: "#3B5242" },
   };
 
   return (
-    <div className="w-full bg-[#12110F] border border-[#D8A86E]/20 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-      {/* Header & Live Telemetry Metrics */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
+    <div className="w-full bg-[#FAF8F5] border-2 border-[#D5CEC2] shadow-[0_12px_40px_rgba(74,67,59,0.08)] p-6 sm:p-8 space-y-6 relative overflow-hidden rounded-xs">
+      {/* Fine margin etching border */}
+      <div className="absolute inset-1.5 border border-[#E5DFD3] pointer-events-none" />
+
+      {/* Header & Telemetry Brass Plaques */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E5DFD3] pb-5 relative z-10">
         <div>
-          <div className="flex items-center space-x-2 text-xs font-mono-data text-[#C99454] uppercase tracking-widest">
+          <div className="flex items-center space-x-2 text-xs font-mono tracking-widest text-[#721C24] uppercase font-bold">
             <Activity className="w-3.5 h-3.5" />
-            <span>Telemetry Profiling · Giesen W6A Laboratory Drum</span>
+            <span>FIG. 06 — PROFILAGE THERMIQUE DU TAMBOUR</span>
           </div>
-          <h3 className="text-2xl font-editorial font-bold text-white mt-1">
-            Model Kurva Sangrai Presisi
+          <h3 className="text-2xl font-editorial font-bold text-[#181715] mt-1">
+            Modèle de Courbe Thermique CCR
           </h3>
         </div>
 
-        {/* Telemetry Display Chips */}
-        <div className="flex items-center gap-3">
-          <div className="px-3.5 py-2 rounded-xl bg-[#1C1A17] border border-white/10">
-            <span className="text-[10px] uppercase font-mono-data text-[#8C8375] block">Bean Temp (BT)</span>
-            <span className="text-lg font-mono-data font-bold text-[#E6DFD5]">
+        {/* Telemetry Display Chips: Antique Brass Inset Plaques */}
+        <div className="flex items-center gap-2.5">
+          <div className="px-3.5 py-1.5 bg-[#F2ECE0] border border-[#C5BCAB] shadow-xs">
+            <span className="text-[9px] uppercase font-mono tracking-wider text-[#7A7268] block">
+              Bean Temp (BT)
+            </span>
+            <span className="text-base font-mono font-bold text-[#181715]">
               {currentPoint.beanTemp}°C
             </span>
           </div>
-          <div className="px-3.5 py-2 rounded-xl bg-[#1C1A17] border border-white/10">
-            <span className="text-[10px] uppercase font-mono-data text-[#8C8375] block">Rate of Rise (RoR)</span>
-            <span className="text-lg font-mono-data font-bold text-[#C99454]">
+          <div className="px-3.5 py-1.5 bg-[#F2ECE0] border border-[#C5BCAB] shadow-xs">
+            <span className="text-[9px] uppercase font-mono tracking-wider text-[#7A7268] block">
+              Rate of Rise (RoR)
+            </span>
+            <span className="text-base font-mono font-bold text-[#721C24]">
               {currentPoint.rateOfRise}°C/m
             </span>
           </div>
-          <div className="px-3.5 py-2 rounded-xl bg-[#1C1A17] border border-white/10">
-            <span className="text-[10px] uppercase font-mono-data text-[#8C8375] block">Exhaust (ET)</span>
-            <span className="text-lg font-mono-data font-bold text-amber-200">
+          <div className="px-3.5 py-1.5 bg-[#F2ECE0] border border-[#C5BCAB] shadow-xs">
+            <span className="text-[9px] uppercase font-mono tracking-wider text-[#7A7268] block">
+              Exhaust (ET)
+            </span>
+            <span className="text-base font-mono font-bold text-[#8C6E2E]">
               {currentPoint.exhaustTemp}°C
             </span>
           </div>
@@ -90,7 +99,7 @@ export default function RoastCurveGraph() {
       </div>
 
       {/* SVG Interactive Roast Curve Chart */}
-      <div className="relative w-full overflow-x-auto select-none">
+      <div className="relative w-full overflow-x-auto select-none bg-[#F7F4EE] border border-[#E2DDD2] p-2">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto min-w-[620px]">
           {/* Grid lines */}
           {[100, 140, 180, 220].map((t) => (
@@ -100,15 +109,16 @@ export default function RoastCurveGraph() {
                 y1={getYTemp(t)}
                 x2={width - padding.right}
                 y2={getYTemp(t)}
-                stroke="rgba(255,255,255,0.06)"
-                strokeDasharray="4 4"
+                stroke="#D5CEC2"
+                strokeWidth="0.75"
+                strokeDasharray="3 3"
               />
               <text
                 x={padding.left - 10}
                 y={getYTemp(t) + 4}
-                fill="#8C8375"
+                fill="#7A7268"
                 fontSize="10"
-                fontFamily="Space Mono"
+                fontFamily="Space Mono, monospace"
                 textAnchor="end"
               >
                 {t}°C
@@ -124,14 +134,16 @@ export default function RoastCurveGraph() {
                 y1={padding.top}
                 x2={getX(sec)}
                 y2={height - padding.bottom}
-                stroke="rgba(255,255,255,0.04)"
+                stroke="#D5CEC2"
+                strokeWidth="0.75"
+                strokeDasharray="3 3"
               />
               <text
                 x={getX(sec)}
                 y={height - padding.bottom + 18}
-                fill="#8C8375"
+                fill="#7A7268"
                 fontSize="10"
-                fontFamily="Space Mono"
+                fontFamily="Space Mono, monospace"
                 textAnchor="middle"
               >
                 {Math.floor(sec / 60)}:00
@@ -145,31 +157,35 @@ export default function RoastCurveGraph() {
             y={padding.top}
             width={getX(520) - getX(460)}
             height={graphHeight}
-            fill="rgba(239, 68, 68, 0.08)"
+            fill="rgba(114, 28, 36, 0.08)"
+            stroke="rgba(114, 28, 36, 0.2)"
+            strokeWidth="0.75"
+            strokeDasharray="2 2"
           />
           <text
             x={getX(490)}
             y={padding.top + 16}
-            fill="#ef4444"
-            fontSize="10"
-            fontFamily="Space Mono"
+            fill="#721C24"
+            fontSize="9"
+            fontFamily="Space Mono, monospace"
             textAnchor="middle"
             fontWeight="bold"
+            letterSpacing="1"
           >
             FIRST CRACK (198°C)
           </text>
 
           {/* Exhaust Temperature Curve */}
-          <path d={etPath} fill="none" stroke="#FDE68A" strokeWidth="2" opacity="0.6" />
+          <path d={etPath} fill="none" stroke="#8C6E2E" strokeWidth="1.75" opacity="0.85" />
 
           {/* Rate of Rise Curve (RoR) */}
           <path
             d={rorPath}
             fill="none"
-            stroke="#C99454"
+            stroke="#721C24"
             strokeWidth="1.5"
-            strokeDasharray="3 3"
-            opacity="0.8"
+            strokeDasharray="4 3"
+            opacity="0.9"
           />
 
           {/* Bean Temperature Curve (BT) with Gradient Fill */}
@@ -178,15 +194,15 @@ export default function RoastCurveGraph() {
               height - padding.bottom
             } L ${getX(0)} ${height - padding.bottom} Z`}
             fill="url(#curveGradient)"
-            opacity="0.15"
+            opacity="0.12"
           />
-          <path d={btPath} fill="none" stroke="#F5F2EB" strokeWidth="3" />
+          <path d={btPath} fill="none" stroke="#181715" strokeWidth="2.5" />
 
           {/* Gradient Definition */}
           <defs>
             <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#C99454" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#C99454" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="#BFA15F" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#FAF8F5" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -202,10 +218,10 @@ export default function RoastCurveGraph() {
                 <circle
                   cx={getX(pt.timeSec)}
                   y={getYTemp(pt.beanTemp)}
-                  r={isSelected ? 7 : 4}
-                  fill={isSelected ? "#C99454" : "#12110F"}
-                  stroke={isSelected ? "#FFFFFF" : "#C99454"}
-                  strokeWidth="2"
+                  r={isSelected ? 6.5 : 3.5}
+                  fill={isSelected ? "#721C24" : "#FAF8F5"}
+                  stroke={isSelected ? "#181715" : "#8C6E2E"}
+                  strokeWidth="1.5"
                   className="transition-all duration-200"
                 />
               </g>
@@ -218,35 +234,35 @@ export default function RoastCurveGraph() {
             y1={padding.top}
             x2={getX(currentPoint.timeSec)}
             y2={height - padding.bottom}
-            stroke="#C99454"
-            strokeWidth="1.5"
-            strokeDasharray="2 2"
+            stroke="#721C24"
+            strokeWidth="1.25"
+            strokeDasharray="3 3"
           />
         </svg>
       </div>
 
-      {/* Scrub Slider & Phase Explanation */}
-      <div className="bg-[#1A1816] border border-white/5 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Scrub Slider & Phase Explanation: Antique Brass Console */}
+      <div className="bg-[#F2ECE0] border border-[#C5BCAB] p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <span
-              className="w-2.5 h-2.5 rounded-full"
+              className="w-2.5 h-2.5 rounded-full shadow-xs"
               style={{ backgroundColor: phaseNames[currentPoint.phase].color }}
             />
-            <span className="text-xs font-mono-data uppercase font-bold text-white">
+            <span className="text-xs font-mono uppercase font-bold text-[#181715]">
               {phaseNames[currentPoint.phase].label} ({currentPoint.timeLabel})
             </span>
           </div>
-          <p className="text-xs font-sans text-[#A69E90]">
+          <p className="text-xs font-sans text-[#5A534B]">
             {phaseNames[currentPoint.phase].desc}
           </p>
         </div>
 
         {/* Timeline Scrub Controls */}
-        <div className="w-full sm:w-64 space-y-1.5">
-          <div className="flex justify-between text-[10px] font-mono-data text-[#8C8375]">
-            <span>Timeline Sangrai</span>
-            <span className="text-[#C99454]">{currentPoint.timeLabel}</span>
+        <div className="w-full sm:w-64 space-y-1">
+          <div className="flex justify-between text-[10px] font-mono text-[#7A7268] uppercase">
+            <span>CHRONO TIMELINE</span>
+            <span className="text-[#721C24] font-bold">{currentPoint.timeLabel}</span>
           </div>
           <input
             type="range"
@@ -254,7 +270,7 @@ export default function RoastCurveGraph() {
             max={roastProfileSample.length - 1}
             value={selectedPointIdx}
             onChange={(e) => setSelectedPointIdx(Number(e.target.value))}
-            className="w-full accent-[#C99454] cursor-pointer"
+            className="w-full accent-[#721C24] cursor-pointer"
           />
         </div>
       </div>

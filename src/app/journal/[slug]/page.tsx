@@ -23,52 +23,52 @@ export default function ArticlePage({
   const paragraphs = article.content[language].split("\n\n");
 
   return (
-    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
+    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12 bg-[#F7F4EE] text-[#181715]">
       {/* Back Button */}
       <Link
         href="/journal"
-        className="inline-flex items-center space-x-2 text-xs font-mono-data uppercase tracking-wider text-[#A69E90] hover:text-[#C99454] transition-colors"
+        className="inline-flex items-center space-x-2 text-xs font-mono uppercase tracking-wider text-[#7A7268] hover:text-[#721C24] transition-colors font-bold"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span>Kembali ke Jurnal</span>
+        <span>Retour au Registre du Journal</span>
       </Link>
 
       {/* Article Header */}
-      <header className="space-y-6 border-b border-white/10 pb-8">
-        <div className="flex flex-wrap items-center gap-3 text-xs font-mono-data text-[#C99454]">
-          <span className="uppercase tracking-widest">{article.category}</span>
+      <header className="space-y-6 border-b border-[#D5CEC2] pb-8">
+        <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-[#721C24]">
+          <span className="uppercase tracking-widest font-bold">{article.category}</span>
           <span>·</span>
-          <span className="text-[#8C8375] flex items-center">
+          <span className="text-[#7A7268] flex items-center">
             <Clock className="w-3.5 h-3.5 mr-1" />
             {article.readTime}
           </span>
           <span>·</span>
-          <span className="text-[#8C8375] flex items-center">
+          <span className="text-[#7A7268] flex items-center">
             <Calendar className="w-3.5 h-3.5 mr-1" />
             {article.date}
           </span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-editorial font-bold text-white leading-tight">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-editorial font-bold text-[#181715] leading-tight">
           {article.title[language]}
         </h1>
 
-        <div className="flex items-center justify-between text-xs font-mono-data text-[#A69E90] pt-2">
+        <div className="flex items-center justify-between text-xs font-mono text-[#7A7268] pt-2">
           <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 rounded-full bg-[#C99454]/20 border border-[#C99454]/40 flex items-center justify-center text-[#C99454]">
-              <User className="w-3.5 h-3.5" />
+            <div className="w-7 h-7 rounded-full bg-[#721C24] flex items-center justify-center text-white text-[10px] font-bold">
+              CCR
             </div>
-            <span>{article.author}</span>
+            <span className="font-bold text-[#181715]">{article.author}</span>
           </div>
 
-          <span className="text-[11px] text-[#8C8375]">
-            Goalpara Estate Camp, Sukabumi
+          <span className="text-[11px] text-[#7A7268]">
+            Goalpara Estate Camp, 1.250 MDPL
           </span>
         </div>
       </header>
 
       {/* Article Content / Reading Flow */}
-      <article className="prose prose-invert max-w-none space-y-6 text-base sm:text-lg font-sans text-[#DCD5C8] leading-relaxed">
+      <article className="max-w-none space-y-6 text-base sm:text-lg font-sans text-[#4A433B] leading-relaxed">
         {paragraphs.map((p, idx) => {
           // Check if paragraph is an authentic quote from @cherrycoffeeroastery
           if (
@@ -80,7 +80,7 @@ export default function ArticlePage({
             return (
               <blockquote
                 key={idx}
-                className="my-8 p-6 sm:p-8 rounded-2xl bg-[#1A1815] border-l-4 border-[#C99454] font-editorial text-2xl text-[#F5F2EB] italic leading-relaxed shadow-lg"
+                className="my-8 p-6 sm:p-8 bg-[#F2ECE0] border-l-4 border-[#721C24] font-editorial text-2xl text-[#181715] italic leading-relaxed shadow-xs"
               >
                 &ldquo;{p}&rdquo;
               </blockquote>
@@ -88,7 +88,7 @@ export default function ArticlePage({
           }
 
           return (
-            <p key={idx} className="leading-relaxed whitespace-pre-line text-[#C8C2B6]">
+            <p key={idx} className="leading-relaxed whitespace-pre-line text-[#3B352E]">
               {p}
             </p>
           );
@@ -96,21 +96,21 @@ export default function ArticlePage({
       </article>
 
       {/* Article Footer */}
-      <div className="pt-10 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="pt-10 border-t border-[#D5CEC2] flex flex-col sm:flex-row items-center justify-between gap-4">
         <Link
           href="/beans"
-          className="px-6 py-3 rounded-full bg-[#1C1A17] hover:bg-[#C99454] hover:text-[#0E0D0C] border border-white/10 text-xs font-mono-data uppercase font-bold tracking-wider text-[#DCD5C8] transition-all"
+          className="px-6 py-3 bg-[#721C24] hover:bg-[#8B2635] text-white font-mono text-xs uppercase font-bold tracking-wider transition-all shadow-xs"
         >
-          <span>Eksplorasi Biji Kopi Sangrai Kami</span>
+          <span>Eksplorasi Spécimens Biji Kopi</span>
         </Link>
 
         <a
           href="https://www.instagram.com/cherrycoffeeroastery"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-mono-data text-[#C99454] hover:underline"
+          className="text-xs font-mono text-[#721C24] hover:text-[#8C6E2E] font-bold uppercase tracking-wider"
         >
-          Ikuti Cerita Lainnya di Instagram @cherrycoffeeroastery
+          Ikuti Cerita Lainnya @cherrycoffeeroastery
         </a>
       </div>
     </div>

@@ -25,7 +25,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="relative w-full bg-[#0E0D0C] text-[#F7F5F0] overflow-hidden">
+    <main className="relative w-full bg-[#F7F4EE] text-[#181715] overflow-hidden">
       {/* 1. EDITORIAL ATELIER HERO (Tactile Macro Photography & Optical Loupe) */}
       <EditorialHero />
 

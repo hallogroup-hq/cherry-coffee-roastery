@@ -33,23 +33,23 @@ export default function CherryEduSection() {
   ];
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto border-t border-[#D8A86E]/15">
+    <section className="py-24 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto border-t border-[#E5DFD3]">
       {/* Editorial Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#D8A86E]/15 pb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E5DFD3] pb-10">
         <div className="space-y-3">
-          <div className="flex items-center space-x-2 text-[11px] font-mono-data text-[#C99454] uppercase tracking-widest">
-            <span>[ ACADEMY WING ]</span>
+          <div className="flex items-center space-x-2 text-xs font-mono text-[#721C24] uppercase tracking-widest font-bold">
+            <span>[ CONSERVATOIRE &amp; ÉCOLE DU CAFÉ ]</span>
             <span>·</span>
-            <span>EDUKASI DARI HULU KE HILIR</span>
+            <span>HULU HINGGA HILIR</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-editorial font-bold text-[#F7F5F0] leading-[1.1]">
+          <h2 className="text-4xl sm:text-5xl font-editorial font-bold text-[#181715] leading-[1.08]">
             CherryEdu. <br />
-            <span className="italic font-light text-[#D8A86E]">
+            <span className="italic font-light text-[#721C24]">
               Indonesian Specialty Coffee Academy.
             </span>
           </h2>
-          <p className="text-sm font-sans text-[#A69E90] max-w-2xl leading-relaxed">
-            Misi kami tidak berhenti pada cangkir yang diseduh di Goalpara. Dibina langsung oleh tim roaster dan barista Cherry Coffee Roastery, CherryEdu hadir memberdayakan siapa pun—dari pemula hingga profesional—untuk memahami kopi secara mendalam dari hulu (kebun) hingga ke hilir (seduhan).
+          <p className="text-sm sm:text-base font-sans text-[#4A433B] max-w-2xl leading-relaxed">
+            Misi kami tidak berhenti pada cangkir yang diseduh di Goalpara. Dibina langsung oleh tim roaster dan barista Cherry Coffee Roastery, CherryEdu hadir memberdayakan siapa pun—dari penikmat rumahan hingga calon profesional—untuk memahami kopi secara utuh dari tanah perkebunan hingga ke ekstraksi presisi.
           </p>
         </div>
 
@@ -57,54 +57,54 @@ export default function CherryEduSection() {
           href="https://edu.cherrycoffeeroastery.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center space-x-2 px-6 py-3.5 bg-[#C99454] hover:bg-[#D8A86E] text-[#0E0D0C] font-mono-data text-xs font-bold uppercase tracking-wider transition-all shadow-lg group"
+          className="inline-flex items-center space-x-2 px-6 py-3.5 bg-[#721C24] hover:bg-[#8B2635] text-white font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs group"
         >
           <span>Buka Platform CherryEdu</span>
           <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
         </a>
       </div>
 
-      {/* Curriculum Tracks / Pillars Table */}
+      {/* Curriculum Tracks: Botanical Folio Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-10">
         {learningPillars.map((pillar) => (
           <div
             key={pillar.num}
-            className="p-6 bg-[#131210] border border-[#D8A86E]/15 flex flex-col justify-between space-y-6 group hover:border-[#C99454]/40 transition-colors"
+            className="p-6 bg-[#FAF8F5] border-2 border-[#D5CEC2] flex flex-col justify-between space-y-6 group hover:border-[#721C24] transition-all shadow-[0_4px_16px_rgba(74,67,59,0.04)] relative"
           >
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs font-mono-data">
-                <span className="text-[#C99454] font-bold">TRACK {pillar.num}</span>
-                <span className="text-[10px] text-[#8C8375] uppercase px-2 py-0.5 border border-white/10">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-[#721C24] font-bold">TRACK {pillar.num}</span>
+                <span className="text-[10px] text-[#7A7268] uppercase px-2 py-0.5 border border-[#D5CEC2] bg-[#F2EFE8]">
                   {pillar.badge}
                 </span>
               </div>
-              <h3 className="text-xl font-editorial font-semibold text-[#F7F5F0] group-hover:text-[#C99454] transition-colors">
+              <h3 className="text-xl font-editorial font-bold text-[#181715] group-hover:text-[#721C24] transition-colors">
                 {pillar.title}
               </h3>
-              <p className="text-xs font-sans text-[#A69E90] leading-relaxed">
+              <p className="text-xs font-sans text-[#5A534B] leading-relaxed">
                 {pillar.desc}
               </p>
             </div>
 
-            <div className="pt-4 border-t border-white/5 text-[11px] font-mono-data text-[#8C8375]">
-              Kurikulum Resmi CCR Lab
+            <div className="pt-4 border-t border-[#E5DFD3] text-[10px] font-mono text-[#7A7268] uppercase tracking-wider">
+              KURIKULUM RESMI CCR LAB
             </div>
           </div>
         ))}
       </div>
 
       {/* Academy Callout Bar */}
-      <div className="mt-10 p-6 bg-[#181614] border border-[#D8A86E]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="mt-10 p-6 bg-[#FAF8F5] border-2 border-[#D5CEC2] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 border border-[#C99454]/40 flex items-center justify-center text-[#C99454]">
+          <div className="w-11 h-11 border border-[#C5BCAB] bg-[#F2ECE0] flex items-center justify-center text-[#721C24] shadow-xs">
             <Award className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-editorial font-bold text-[#F7F5F0]">
+            <h4 className="text-sm font-editorial font-bold text-[#181715]">
               Sertifikasi Digital &amp; Jalur Karir Barista
             </h4>
-            <p className="text-xs font-sans text-[#A69E90]">
-              Dilengkapi ujian kelulusan, Credential ID publik, dan kurikulum spesialisasi siap kerja.
+            <p className="text-xs font-sans text-[#7A7268]">
+              Dilengkapi ujian kompetensi, Credential ID publik terverifikasi, dan kurikulum spesialisasi siap industri.
             </p>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function CherryEduSection() {
           href="https://edu.cherrycoffeeroastery.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-mono-data text-[#C99454] hover:text-white uppercase tracking-wider flex items-center space-x-1.5 transition-colors self-start sm:self-center"
+          className="text-xs font-mono text-[#721C24] hover:text-[#8C6E2E] uppercase tracking-wider font-bold flex items-center space-x-1.5 transition-colors self-start sm:self-center"
         >
           <span>Eksplorasi Modul &amp; Sertifikat</span>
           <ArrowRight className="w-3.5 h-3.5" />
