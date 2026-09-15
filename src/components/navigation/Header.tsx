@@ -89,7 +89,7 @@ export default function Header() {
             <div className="relative w-14 h-14 sm:w-16 sm:h-16 filter drop-shadow-[0_4px_10px_rgba(114,28,36,0.3)]">
               <Image
                 src="/apothecary/wax-seal.png"
-                alt="Cherry Coffee Roastery Est. 2018 Wax Seal"
+                alt="Cherry Coffee Roastery Est. 2025 Wax Seal"
                 fill
                 className="object-contain"
                 priority
