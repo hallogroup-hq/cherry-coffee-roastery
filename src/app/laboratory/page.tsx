@@ -6,6 +6,7 @@ import { fermentationLogs } from "@/data/laboratory";
 import RoastCurveGraph from "@/components/laboratory/RoastCurveGraph";
 import BrewCalculator from "@/components/laboratory/BrewCalculator";
 import FlavorRadar from "@/components/laboratory/FlavorRadar";
+import GoalparaExtractionCanvas from "@/components/hero/GoalparaExtractionCanvas";
 import {
   FlaskConical,
   Flame,
@@ -15,6 +16,7 @@ import {
   ArrowRight,
   ShieldCheck,
   MessageCircle,
+  Activity,
 } from "lucide-react";
 
 export default function LaboratoryPage() {
@@ -80,6 +82,15 @@ export default function LaboratoryPage() {
           <span>FASE 03 · SAINS SEDUH SLOW BAR &amp; RASIO EMAS</span>
         </div>
         <BrewCalculator />
+      </section>
+
+      {/* 4. Goalpara Extraction Anatomy (Option 2 Precision Canvas in Botanical Theme) */}
+      <section className="space-y-4">
+        <div className="flex items-center space-x-2 text-xs font-mono text-[#721C24] uppercase tracking-wider font-bold">
+          <Activity className="w-4 h-4" />
+          <span>FASE 04 · ANATOMIE D&apos;EXTRACTION GOALPARA &amp; DISSOLUTION</span>
+        </div>
+        <GoalparaExtractionCanvas />
       </section>
 
       {/* 5. The R&D Fermentation Vault (Exclusive Micro-Batches) */}
